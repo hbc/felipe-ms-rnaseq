@@ -544,3 +544,16 @@ for(i in seq(length(all_results))) {
   cat("\n")
 }
 ```
+
+## wrapup
+I wouldn't sequence these samples any more for a couple of reasons. The first is
+that there are clearly some issues with either the rRNA extraction or the
+library creation process and RNA-seq tends to be garbage in and garbage out. The
+second reason is that even if we drop some of the really bad samples and if we
+try to clean up the data some more, it
+doesn't look like there is a suggestion of separation between the samples on whether or not they are MS or control samples. That could be masked due to the poor library quality or it could be that there isn't
+any signal there. If we look at the MDS plot we can see that most of the
+variation is described by the first principal component, but I
+couldn't figure out by looking at the samples what that component was comprised of. If we had more phenotypic information about the patients we could maybe see if they were separating by age or gender or something like that.
+
+Sorry for the not great news. I'm happy to answer any questions you might have.
