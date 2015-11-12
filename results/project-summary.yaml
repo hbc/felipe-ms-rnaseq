@@ -1,0 +1,1237 @@
+date: '2015-11-10 20:52:16.802714'
+upload: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/final
+bcbio_system: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy/bcbio_system.yaml
+samples:
+- description: MS-3
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '41'
+      5'-3' bias: 0.76
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.6446
+      Fragment Length Mean: 98.0
+      Genes Detected: 0
+      Intergenic Rate: 0.2793
+      Intronic Rate: 0.0761
+      Mapped: 6659378
+      Mapped reads: '7770206'
+      Mapped reads pct: 48.4218%
+      Mapping Rate: 0.4458585745105626
+      Mean Per Base Cov.: 0
+      Median insert size: '186'
+      Name: MS-3
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '16046905'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1055989'
+      rRNA_rate: '0.625252901446'
+- description: HC-1
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '44'
+      5'-3' bias: 0.86
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5317000000000001
+      Fragment Length Mean: 121.0
+      Genes Detected: 0
+      Intergenic Rate: 0.15410000000000001
+      Intronic Rate: 0.3141
+      Mapped: 8522911
+      Mapped reads: '9378933'
+      Mapped reads pct: 79.221%
+      Mapping Rate: 0.7760143947029067
+      Mean Per Base Cov.: 0
+      Median insert size: '188'
+      Name: HC-1
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '11838951'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '870686'
+      rRNA_rate: '0.429431023105'
+- description: HC-8
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '43'
+      5'-3' bias: 0.72
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5403
+      Fragment Length Mean: 121.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1199
+      Intronic Rate: 0.3398
+      Mapped: 9622065
+      Mapped reads: '10285899'
+      Mapped reads pct: 92.4371%
+      Mapping Rate: 0.9195731573228809
+      Mean Per Base Cov.: 0
+      Median insert size: '172'
+      Name: HC-8
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '11127455'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1139243'
+      rRNA_rate: '0.469826576532'
+- description: MS-4
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '45'
+      5'-3' bias: 0.9
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5548
+      Fragment Length Mean: 99.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1818
+      Intronic Rate: 0.2634
+      Mapped: 16972178
+      Mapped reads: '18879019'
+      Mapped reads pct: 91.9965%
+      Mapping Rate: 0.9117665592653598
+      Mean Per Base Cov.: 0
+      Median insert size: '179'
+      Name: MS-4
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '20521450'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '2504588'
+      rRNA_rate: '0.621001074595'
+- description: HC-2
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '42'
+      5'-3' bias: 0.79
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.6357
+      Fragment Length Mean: 153.0
+      Genes Detected: 0
+      Intergenic Rate: 0.18059999999999998
+      Intronic Rate: 0.1837
+      Mapped: 6143101
+      Mapped reads: '6848774'
+      Mapped reads pct: 49.1452%
+      Mapping Rate: 0.46432682447472334
+      Mean Per Base Cov.: 0
+      Median insert size: '214'
+      Name: HC-2
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '13935796'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '890323'
+      rRNA_rate: '0.522413071783'
+- description: MS-5
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '42'
+      5'-3' bias: 1.11
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.6674
+      Fragment Length Mean: 169.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1411
+      Intronic Rate: 0.19149999999999998
+      Mapped: 7804783
+      Mapped reads: '8595286'
+      Mapped reads pct: 67.649%
+      Mapping Rate: 0.6550267292745837
+      Mean Per Base Cov.: 0
+      Median insert size: '194'
+      Name: MS-5
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '12705716'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1144758'
+      rRNA_rate: '0.486083398972'
+- description: HC-3
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '35'
+      5'-3' bias: 0.72
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.6561
+      Fragment Length Mean: 124.0
+      Genes Detected: 0
+      Intergenic Rate: 0.17850000000000002
+      Intronic Rate: 0.1653
+      Mapped: 3301699
+      Mapped reads: '3681331'
+      Mapped reads pct: 22.8044%
+      Mapping Rate: 0.2094531220907738
+      Mean Per Base Cov.: 0
+      Median insert size: '201'
+      Name: HC-3
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '16143059'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '534481'
+      rRNA_rate: '0.564567955484'
+- description: HC-9
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '41'
+      5'-3' bias: 0.87
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.6315999999999999
+      Fragment Length Mean: 136.0
+      Genes Detected: 0
+      Intergenic Rate: 0.076
+      Intronic Rate: 0.2923
+      Mapped: 9584057
+      Mapped reads: '10285252'
+      Mapped reads pct: 84.8342%
+      Mapping Rate: 0.8390318554443555
+      Mean Per Base Cov.: 0
+      Median insert size: '186'
+      Name: HC-9
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '12123952'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1519490'
+      rRNA_rate: '0.529502675409'
+- description: MS-6
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '42'
+      5'-3' bias: 1.74
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5611
+      Fragment Length Mean: 108.0
+      Genes Detected: 0
+      Intergenic Rate: 0.2273
+      Intronic Rate: 0.2116
+      Mapped: 11416127
+      Mapped reads: '12563574'
+      Mapped reads pct: 88.3912%
+      Mapping Rate: 0.8737174688129346
+      Mean Per Base Cov.: 0
+      Median insert size: '173'
+      Name: MS-6
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '14213601'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1388913'
+      rRNA_rate: '0.493398385005'
+- description: HC-4
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '45'
+      5'-3' bias: 0.83
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5642
+      Fragment Length Mean: 97.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1432
+      Intronic Rate: 0.2926
+      Mapped: 12858604
+      Mapped reads: '14104457'
+      Mapped reads pct: 93.253%
+      Mapping Rate: 0.9264734670909501
+      Mean Per Base Cov.: 0
+      Median insert size: '174'
+      Name: HC-4
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '15124938'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1653623'
+      rRNA_rate: '0.506326234168'
+- description: MS-7
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '42'
+      5'-3' bias: 0.96
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.8033
+      Fragment Length Mean: 112.0
+      Genes Detected: 0
+      Intergenic Rate: 0.075
+      Intronic Rate: 0.1217
+      Mapped: 12649174
+      Mapped reads: '13569512'
+      Mapped reads pct: 94.3083%
+      Mapping Rate: 0.9391940891505605
+      Mean Per Base Cov.: 0
+      Median insert size: '137'
+      Name: MS-7
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '14388453'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '3859360'
+      rRNA_rate: '0.813511762253'
+- description: HC-5
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '31'
+      5'-3' bias: 0.81
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5634
+      Fragment Length Mean: 120.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1226
+      Intronic Rate: 0.314
+      Mapped: 481366
+      Mapped reads: '519021'
+      Mapped reads pct: 2.6348%
+      Mapping Rate: 0.024483259418913335
+      Mean Per Base Cov.: 0
+      Median insert size: '199'
+      Name: HC-5
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '19698681'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '60960'
+      rRNA_rate: '0.484043862505'
+- description: MS-1
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '35'
+      5'-3' bias: 0.68
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.34119999999999995
+      Fragment Length Mean: 0.0
+      Genes Detected: 0
+      Intergenic Rate: 0.4347
+      Intronic Rate: 0.2241
+      Mapped: 512924
+      Mapped reads: '561875'
+      Mapped reads pct: 3.74418%
+      Mapping Rate: 0.034291702230915495
+      Mean Per Base Cov.: 0
+      Median insert size: '165'
+      Name: MS-1
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '15006622'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '56171'
+      rRNA_rate: '0.769286604489'
+- description: MS-8
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '31'
+      5'-3' bias: 0.97
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.8390000000000001
+      Fragment Length Mean: 94.0
+      Genes Detected: 0
+      Intergenic Rate: 0.049400000000000006
+      Intronic Rate: 0.1116
+      Mapped: 544940
+      Mapped reads: '581721'
+      Mapped reads pct: 5.27977%
+      Mapping Rate: 0.049625079943878325
+      Mean Per Base Cov.: 0
+      Median insert size: '181'
+      Name: MS-8
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '11017922'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '169199'
+      rRNA_rate: '0.782090393913'
+- description: HC-6
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '45'
+      5'-3' bias: 0.74
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5642
+      Fragment Length Mean: 96.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1472
+      Intronic Rate: 0.2887
+      Mapped: 64641285
+      Mapped reads: '70534912'
+      Mapped reads pct: 93.8492%
+      Mapping Rate: 0.9332584883759508
+      Mean Per Base Cov.: 0
+      Median insert size: '163'
+      Name: HC-6
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '75157701'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '8178157'
+      rRNA_rate: '0.497068065838'
+- description: MS-9
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '36'
+      5'-3' bias: 0.86
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5721
+      Fragment Length Mean: 132.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1012
+      Intronic Rate: 0.3267
+      Mapped: 1864533
+      Mapped reads: '1982225'
+      Mapped reads pct: 15.1061%
+      Mapping Rate: 0.14337821234179654
+      Mean Per Base Cov.: 0
+      Median insert size: '162'
+      Name: MS-9
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '13121990'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '263839'
+      rRNA_rate: '0.523016873622'
+- description: HC-7
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: HC
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '31'
+      5'-3' bias: 1.61
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5991
+      Fragment Length Mean: 0.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1501
+      Intronic Rate: 0.25079999999999997
+      Mapped: 69614
+      Mapped reads: '75231'
+      Mapped reads pct: 1.33801%
+      Mapping Rate: 0.012393505827158894
+      Mean Per Base Cov.: 0
+      Median insert size: '171'
+      Name: HC-7
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '5622591'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '7348'
+      rRNA_rate: '0.382389675271'
+- description: MS-2
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  metadata:
+    condition: MS
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '44'
+      5'-3' bias: 0.83
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5908
+      Fragment Length Mean: 152.0
+      Genes Detected: 0
+      Intergenic Rate: 0.20190000000000002
+      Intronic Rate: 0.20739999999999997
+      Mapped: 7853376
+      Mapped reads: '8760675'
+      Mapped reads pct: 65.1265%
+      Mapping Rate: 0.6260418218642749
+      Mean Per Base Cov.: 0
+      Median insert size: '199'
+      Name: MS-2
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '13451790'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '1203693'
+      rRNA_rate: '0.610489505169'
+- description: Undetermined_S0_L002
+  dirs:
+    config: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    fastq: null
+    flowcell: null
+    galaxy: /n/regal/hsph_bioinfo/bcbio_nextgen/galaxy
+    work: /net/hsphfs1/srv/export/hsphfs1/share_root/chb/projects/felipe-rnaseq/felipe/work
+  genome_build: GRCh37
+  genome_resources:
+    aliases:
+      ensembl: homo_sapiens_vep_81_GRCh37
+      human: true
+      snpeff: GRCh37.75
+    rnaseq:
+      dexseq: ../rnaseq/ref-transcripts.dexseq.gff3
+      gene_bed: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.bed
+      rRNA_fa: ../rnaseq/rRNA.fa
+      refflat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.refFlat
+      transcriptome_index:
+        tophat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/tophat/GRCh37_transcriptome.ver
+      transcripts: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts.gtf
+      transcripts_mask: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/rnaseq/ref-transcripts-mask.gtf
+    variation:
+      ancestral: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/human_ancestor.fa.gz
+      cosmic: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/cosmic-v68-GRCh37.vcf.gz
+      dbnsfp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbNSFP_v3.0b2c.gz
+      dbsnp: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/dbsnp_138.vcf.gz
+      lcr: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/LCR.bed.gz
+      qsignature: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/qsignature.vcf
+      sv_repeat: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/sv_repeat_telomere_centromere.bed
+      train_1000g: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_phase1.snps.high_confidence.vcf.gz
+      train_hapmap: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/hapmap_3.3.vcf.gz
+      train_indels: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/Mills_and_1000G_gold_standard.indels.vcf.gz
+      train_omni: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/variation/1000G_omni2.5.vcf.gz
+    version: 21
+  sam_ref: /n/regal/hsph_bioinfo/bcbio_nextgen/genomes/Hsapiens/GRCh37/seq/GRCh37.fa
+  summary:
+    metrics:
+      '%GC': '44'
+      5'-3' bias: 0.74
+      Duplicates: '0'
+      Duplicates pct: 0%
+      Duplication Rate of Mapped: 0.0
+      Exonic Rate: 0.5814
+      Fragment Length Mean: 111.0
+      Genes Detected: 0
+      Intergenic Rate: 0.1548
+      Intronic Rate: 0.2638
+      Mapped: 4242414
+      Mapped reads: '4647428'
+      Mapped reads pct: 52.2193%
+      Mapping Rate: 0.4994125823679593
+      Mean Per Base Cov.: 0
+      Median insert size: '169'
+      Name: Undetermined_S0_L002
+      Quality format: standard
+      Sequence length: 25-50
+      Sequences flagged as poor quality: '0'
+      Total reads: '8899822'
+      Transcripts Detected: 0
+      avg_coverage_per_region: NA
+      rRNA: '580759'
+      rRNA_rate: '0.525083835806'
