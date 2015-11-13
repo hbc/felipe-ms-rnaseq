@@ -60,6 +60,14 @@ counts = counts[, colnames(counts) %in% summarydata$Name]
 summarydata$condition = factor(summarydata$condition)
 summarydata$genes_detected = colSums(counts > 0)
 EXTRA_RUNS = 5
+summarydata$pairing = c("A", "A", "A", "B", "B", "B", "C", "C", "C",
+                       "C", "C", "C", "B", "B", "B", "A", "A", "A")
+summarydata$treatment = c("natural", "LPS", "LPS+IL27",
+                          "natural", "LPS", "LPS+IL27",
+                          "LPS", "LPS+IL27", "natural",
+                          "natural", "LPS", "LPS+IL27",
+                          "natural", "LPS", "LPS+IL27",
+                          "natural", "LPS", "LPS+IL27")
 ```
 
 ```{r heatmap-function}
@@ -305,6 +313,20 @@ Counts per gene is normally not this variable, but we've had some problems
 with the libraries. Below we dropped the `r sum(!summarydata$keep)` samples
 that are very low quality and normalized them.
 
+## PCA plot from DESeq2
+```{r deseq2-pca-before-filtering}
+dds = DESeqDataSetFromMatrix(countData=counts, colData=summarydata, design=~condition)
+vst = varianceStabilizingTransformation(dds)
+plotPCA(vst, intgroup=c("pairing", "condition"))
+plotPCA(vst, intgroup=c("treatment", "condition"))
+plotPCA(vst, intgroup=c("treatment", "pairing"))
+pca = plotPCA(vst, intgroup=c("treatment", "pairing"), return=TRUE)
+ggplot(pca, aes(PC1, PC2, color=group, label=name)) + geom_text(size=4) +
+    theme_bw() +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90))
+```
+
 ```{r drop-bad-samples}
 summarydata = subset(summarydata, keep)
 counts = counts[, summarydata$Name]
@@ -355,9 +377,22 @@ heatmap_fn(cor(normalized_counts, method="spearman"))
 ```{r mds-normalized}
 mds(normalized_counts, k=length(colnames(normalized_counts)) - 1)
 ```
-
 Three different methods of clustering the normalized counts doesn't yield
 very nice separation between the MS and unaffected cells.
+
+## Nicer PCA plot from DESeq2
+```{r deseq2-pca-after-filtering}
+dds = DESeqDataSetFromMatrix(countData=counts, colData=summarydata, design=~condition)
+vst = varianceStabilizingTransformation(dds)
+plotPCA(vst, intgroup=c("pairing", "condition"))
+plotPCA(vst, intgroup=c("treatment", "condition"))
+pca = plotPCA(vst, intgroup=c("treatment", "pairing"), return=TRUE)
+ggplot(pca, aes(PC1, PC2, color=group, label=name)) + geom_text(size=4) +
+  scale_colour_manual(values=cbPalette) + theme_bw() +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90))
+```
+
 
 ## Heatmap of top 30 most expressed genes
 ```{r top-count-genes, results='asis'}
