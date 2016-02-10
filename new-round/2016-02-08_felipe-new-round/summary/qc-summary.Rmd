@@ -1,0 +1,590 @@
+---
+  html_document:
+    toc: true
+    highlight: zenburn
+    theme: united
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(tidy=TRUE, highlight=TRUE, dev="png",
+               cache=TRUE, highlight=TRUE, autodep=TRUE, warning=FALSE, error=FALSE,
+               message=FALSE, prompt=TRUE, comment='', fig.cap='')
+```
+
+# Overview
+This is a second round of Felipe's capture experiment. The last round had
+several problems. The mapping rate for many of the samples was low, which
+indicates poor quality of the library. The rRNA mapping rate for the samples
+was also very high, upwards of 50% or higher of the reads were soaked up by
+rRNA. The exonic mapping rate was also low, in the 50% range for most of
+the samples. There was also a very low number of genes detected for many samples,
+less than 5,000 for several.
+
+This new round was with a different capture kit that should hopefully fix some
+of these problems.
+
+```{r qc-setup}
+library(ggplot2)
+library(reshape)
+library(gplots)
+library(edgeR)
+library(CHBUtils)
+library(pheatmap)
+library(DESeq2)
+library(tximport)
+library(logging)
+basicConfig()
+project_summary = "/Users/rory/cache/felipe-rnaseq/new-round/2016-02-08_felipe-new-round/project-summary.csv"
+counts_file = "/Users/rory/cache/felipe-rnaseq/new-round/2016-02-08_felipe-new-round/combined.counts"
+tx2genes_file = "/Users/rory/cache/felipe-rnaseq/new-round/2016-02-08_felipe-new-round/tx2gene.csv"
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
+"#0072B2", "#D55E00", "#CC79A7")
+summarydata = data.frame(read.table(project_summary, header=TRUE, sep=","), row.names="Name", check.rows=FALSE)
+summarydata$Name = rownames(summarydata)
+summarydata = summarydata[order(summarydata$Name),]
+if (file.exists(tx2genes_file)) {
+  loginfo("Using gene counts calculated from the Sailfish transcript counts.")
+  sf_files = file.path("..", "..", rownames(summarydata), "sailfish",
+                      rownames(summarydata), "quant.sf")
+  names(sf_files) = rownames(summarydata)
+  tx2gene = read.table(tx2genes_file, sep=",", row.names=NULL, header=FALSE)
+  txi.salmon = tximport(sf_files, type="salmon", tx2gene=tx2gene,
+                        reader=readr::read_tsv, countsFromAbundance="lengthScaledTPM")
+  counts = round(data.frame(txi.salmon$counts, check.names=FALSE))
+} else {
+  loginfo("Using gene counts calculated from featureCounts.")
+  counts = read.table(counts_file, header=TRUE, row.names="id", check.names=FALSE)
+}
+counts = counts[, order(colnames(counts)), drop=FALSE]
+colnames(counts) = gsub(".counts", "", colnames(counts))
+
+# this is a list of all non user-supplied metadata columns that could appear
+known_columns = c("Name", "X.GC", "Exonic.Rate", "Sequences.flagged.as.poor.quality",
+    "rRNA_rate", "Fragment.Length.Mean", "Intronic.Rate", "Intergenic.Rate",
+    "Mapping.Rate", "Quality.format", "Duplication.Rate.of.Mapped", "Mapped",
+    "rRNA", "Sequence.length", "Transcripts.Detected", "Mean.Per.Base.Cov.",
+    "Genes.Detected", "Unique.Starts.Per.Read", "unique_starts_per_read",
+    "complexity", "X5.3.bias", "Duplicates.pct", "Duplicates", "Mapped.reads",
+    "Median.insert.size", "Mapped.reads.pct", "Total.reads",
+    "avg_coverage_per_region", "Mapped.Reads")
+# add the metadata from the original samples
+ometadata = read.table("metadata/felipe-new-round.csv", header=TRUE,
+                       sep=",")
+summarydata$fraction = NULL
+summarydata$group = NULL
+summarydata$id = NULL
+summarydata$phenotype = NULL
+summarydata$treatment = NULL
+library(dplyr)
+summarydata = summarydata %>% left_join(ometadata, by=c("Name"="description"))
+rownames(summarydata) = summarydata$Name
+metadata = summarydata[, !colnames(summarydata) %in% known_columns, drop=FALSE]
+metadata = metadata[, c("treatment", "group", "phenotype")]
+```
+
+```{r set-random-seed}
+# set seed for reproducibility
+set.seed(1454944673)
+```
+
+## Sample metadata
+```{r summary-table, echo=FALSE, cache=FALSE}
+DT::datatable(summarydata)
+```
+
+```{r heatmap-function}
+get_heatmap_fn = function(summarydata) {
+    # return the pheatmap function with or without metadata
+    if(ncol(metadata) == 0) {
+       return(pheatmap)
+    }
+    else {
+    # rownames(metadata) = summarydata$Name
+    heatmap_fn = function(data, ...) {
+        pheatmap(data, annotation=metadata, ...)
+    }
+    return(heatmap_fn)
+}}
+heatmap_fn = get_heatmap_fn(summarydata)
+```
+
+# Quality control metrics
+
+```{r qualimap-run}
+qualimap_run = "Mapped" %in% colnames(summarydata)
+```
+
+## Mapped reads
+```{r mapped-plot, eval=qualimap_run}
+ggplot(summarydata, aes(x=Name, y=Mapped)) +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    geom_bar(stat="identity") +
+    ylab("mapped reads") + xlab("")
+```
+
+There are about 5-10 million mapped reads per sample, this is on the low side for
+doing a RNA-seq experiment, we'd usually be aiming for more like 20-30 million.
+
+```{r mapped-plot-noqualimap, eval=!qualimap_run}
+ggplot(summarydata, aes(x=Name, y=Mapped.reads)) +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    geom_bar(stat="identity") +
+    ylab("mapped reads") + xlab("")
+```
+
+## Genomic mapping rate
+```{r mapping-rate-plot, eval=qualimap_run}
+ggplot(summarydata, aes(x=Name, y=Mapping.Rate)) +
+    geom_bar(stat="identity") +
+    ylab("mapping rate") + xlab("") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90))
+```
+
+We can see some problems with these samples as well with the genomic mapping
+rate. `HC-2`, `MS-6`, `MS-3` and `MS-4` all have low mapping rates so something
+is wrong with these libraries.
+
+```{r mapping-rate-plot-noqualimap, eval=!qualimap_run}
+ggplot(summarydata, aes(x=Name, y=Mapped.reads.pct)) +
+    geom_bar(stat="identity") +
+    ylab("mapping rate") + xlab("") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90))
+```
+
+## Number of genes detected
+```{r genes-detected-plot}
+dd = data.frame(Name=colnames(counts), Genes.Detected = colSums(counts > 0))
+ggplot(dd, aes(x=Name, y=Genes.Detected)) +
+    geom_bar(stat="identity") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    ylab("genes detected") + xlab("")
+```
+
+The number of genes detected plots look much much better than the plots from the
+last samples. The last samples had more like 7,500 genes detected. This means
+these libraries are much more complex than the previous libraries, which is very
+good news for running an analysis. There is a huge outlier, `MS-5` has a huge
+number of genes detected compared to the other samples.
+
+## Exonic mapping rate
+```{r exonic-mapping-plot, eval="Exonic.Rate" %in% colnames(summarydata)}
+ggplot(summarydata, aes(x=Name, y=Exonic.Rate)) +
+    geom_bar(stat="identity") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    ylab("exonic mapping rate") + xlab("")
+```
+The exonic mapping rate for some of the samples is very low.
+`MS-5`, `MS-6`, `MS-3` and `MS-4` all have low mapping rates compared to the
+other samples.
+
+## rRNA mapping rate
+```{r check-rRNA-eval}
+eval_rRNA = "rRNA_rate" %in% colnames(summarydata) & !sum(is.na(summarydata$rRNA_rate)) == nrow(summarydata)
+```
+
+```{r rRNA-rate-plot, eval=eval_rRNA}
+ggplot(summarydata, aes(x=Name, y=rRNA_rate)) +
+    geom_bar(stat="identity") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    ylab("rRNA rate") + xlab("")
+```
+
+The rRNA mapping rate for the samples is in general very high. This is not as
+high as before where the average looked to be around 40%, but there are still a
+lot of reads in the rRNA genes.
+
+## Estimated fragment length of paired-end reads
+```{r fragment-length-plot, eval="Fragment.Length.Mean" %in% colnames(summarydata)}
+ggplot(summarydata, aes(x=Name, y=Fragment.Length.Mean)) +
+    geom_bar(stat="identity") +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) +
+    ylab("fragment length") + xlab("")
+```
+
+These fragments are very small, this indicates that there was likely some
+degradation in the libraries. There was no reason to run these libraries paired
+end because the fragment is small enough that a single read would cover it. This
+fragment length is smaller than before, the last run the length was closer to
+100.
+
+## Boxplot of log10 counts per gene
+```{r boxplot-raw}
+melted = melt(counts)
+colnames(melted) = c("sample", "count")
+melted$sample = factor(melted$sample)
+melted = melted[order(melted$sample),]
+melted$count = log(melted$count)
+ggplot(melted, aes(x=sample, y=count)) + geom_boxplot() +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) + xlab("")
+```
+
+The log counts per gene is more uniform than the last round of sequencing,
+which is good.
+
+## Boxplot of log10 TMM-normalized counts per gene
+Trimmed mean of M-values (TMM) normalization is described
+[here](http://genomebiology.com/2010/11/3/R25)
+
+Robinson, M. D., & Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology, 11(3). doi:10.1186/gb-2010-11-3-r25
+
+```{r boxplot-normalized}
+y = DGEList(counts=counts)
+y = calcNormFactors(y)
+normalized_counts = cpm(y, normalized.lib.sizes=TRUE)
+melted = melt(normalized_counts)
+colnames(melted) = c("gene", "sample", "count")
+melted$sample = factor(melted$sample)
+melted = melted[order(melted$sample),]
+melted$count = log(melted$count)
+ggplot(melted, aes(x=sample, y=count)) + geom_boxplot() +
+    theme_bw(base_size=10) +
+    theme(panel.grid.major = element_line(size = .5, color = "grey"),
+          axis.text.x = element_text(angle=90)) + xlab("")
+```
+
+TMM normalizing does a reasonable job normalizing the counts.
+
+The samples don't seem to cluster together by any of the metadata.
+
+## PCA plot
+```{r pca, eval=ncol(counts) > 1}
+dds = DESeqDataSetFromMatrix(countData=counts, colData=summarydata, design=~Name)
+vst = varianceStabilizingTransformation(dds)
+plotPCA(vst, intgroup=c("treatment"))
+plotPCA(vst, intgroup=c("phenotype"))
+plotPCA(vst, intgroup=c("group"))
+plotPCA(vst, intgroup=c("rRNA_rate"))
+plotPCA(vst, intgroup=c("Mapped"))
+plotPCA(vst, intgroup=c("group", "treatment"))
+plotPCA(vst, intgroup=c("group", "phenotype"))
+```
+
+So similar to before, the libraries don't seem to be clustering together
+properly at all. They don't seem to cluster by rRNA rate or number of
+reads mapped either.
+
+Felipe, could you double check that the samples and their metadata matched up
+properly? Could something have gotten swapped along the way?
+
+```{r samples-metadata, cache=FALSE}
+DT:::datatable(metadata)
+```
+
+PCA uses the most variable genes to cluster the cells.
+What are the genes that are most variable between the samples? Maybe a clue
+about what is going on lies in their identities.
+
+```{r lookup-biomart-stuff}
+library(biomaRt)
+human = useMart(biomart = "ENSEMBL_MART_ENSEMBL",
+                dataset="hsapiens_gene_ensembl",
+                host = "jul2015.archive.ensembl.org")
+conversions = getBM(attributes=c("ensembl_gene_id", "hgnc_symbol", "gene_biotype",
+                                 "chromosome_name"), mart=human)
+rrna_biotypes = c("rRNA", "Mt_rRNA", "misc_RNA", "snRNA", "snoRNA",
+                    "tRNA", "Mt_tRNA")
+rrna_genes = unique(subset(conversions, gene_biotype %in% rrna_biotypes)$ensembl_gene_id)
+```
+
+```{r most-variant-genes}
+library(matrixStats)
+vst_values = assay(vst)
+rv = data.frame(gene=rownames(vst_values), rv=rowVars(as.matrix(vst_values)))
+mostvar = rv[order(rv$rv, decreasing=TRUE),] %>%
+             left_join(conversions, by=c("gene"="ensembl_gene_id"))
+```
+
+I thought maybe these genes would be dominated by rRNA, but the top 500
+most variant genes are mostly protein coding:
+
+```{r most-variant-genes-by-biotype}
+knitr::kable(as.data.frame(table(head(mostvar, 500)$gene_biotype)))
+```
+
+```{r most-variant-genes-by-chromosome}
+knitr::kable(as.data.frame(table(head(mostvar, 500)$chromosome_name)))
+```
+
+```{r write-mostvar}
+write.table(head(mostvar, 500)$gene, quote=FALSE, row.names=FALSE, col.names=FALSE,
+            file="500mostvar.txt")
+write.table(head(mostvar, 500)$hgnc_symbol, quote=FALSE, row.names=FALSE,
+            col.names=FALSE, file="500mostvar-symbol.txt")
+write.table(rownames(counts[rowMeans(counts) > 10,]), quote=FALSE,
+            row.names=FALSE, col.names=FALSE, file="expressed.txt")
+```
+
+XIST tops the most variable list, are some of these samples females and
+the other samples males?
+
+```{r mostvar-table, cache=FALSE}
+DT::datatable(head(mostvar, 500))
+```
+
+XIST expression is highly variable between the samples, high in some and almost
+zero in the others:
+
+```{r xist-counts}
+knitr::kable(counts["ENSG00000229807",])
+```
+
+XIST expression doesn't explain the groupings though:
+
+```{r pca-with-xist}
+vst$xist = vst_values["ENSG00000229807",]
+plotPCA(vst, intgroup=c("xist"))
+```
+
+What about an ontology analysis of those top variable genes?
+
+  [GO ontology of top 500 most variable genes](images/GO-most500var.gif)
+
+There is something different about these samples that are causing them to
+group.
+
+I plugged the top 500 most variable genes into EnrichR and looked to see
+what cell types they might be markers for:
+
+```{r read-enrichr, cache=FALSE}
+enrichr_types = read.table("web/cell-types-top500var.txt", header=TRUE, sep="\t")
+DT::datatable(enrichr_types)
+```
+
+Here is a heatmap of the counts for the genes associated with CD33+ myeloid cells:
+
+```{r cd33-genes-heatmap}
+cd33_genes = unlist(strsplit(as.character(enrichr_types[1, "Genes"]), ";"))
+cd33_ids = subset(conversions, hgnc_symbol %in% cd33_genes)$ensembl_gene_id
+cd33_counts = subset(conversions, hgnc_symbol %in% cd33_genes)$ensembl_gene_id
+cd33_counts = log(counts[rownames(counts) %in% cd33_ids,] + 1)
+rownames(cd33_counts) =  conversions[match(rownames(cd33_counts), conversions$ensembl_gene_id), "hgnc_symbol"]
+heatmap_fn(cd33_counts, fontsize=6)
+```
+
+Here is a heatmap of the counts for the genes in the CD14+ monocytes:
+
+```{r cd14-genes-table, cache=FALSE}
+cd14_genes = unlist(strsplit(as.character(enrichr_types[2, "Genes"]), ";"))
+cd14_ids = subset(conversions, hgnc_symbol %in% cd14_genes)$ensembl_gene_id
+cd14_counts = subset(conversions, hgnc_symbol %in% cd14_genes)$ensembl_gene_id
+cd14_counts = log(counts[rownames(counts) %in% cd14_ids,] + 1)
+rownames(cd14_counts) =  conversions[match(rownames(cd14_counts), conversions$ensembl_gene_id), "hgnc_symbol"]
+heatmap_fn(cd14_counts, fontsize=6)
+```
+
+Could the sorting of the cells have grabbed different populations?
+
+We can also throw up our hands and say we don't know what the hidden
+factor is between the samples that is causing the variation and try to remove
+it but it is better to try to track down what could be going o
+
+Below here is a placeholder to do the analysis what we figure out
+what is going on with the samples.
+
+
+```{r deseq2-tximport-helper-functions}
+# snagged from development version of DESeq
+DESeqDataSetFromTximport <- function(txi, colData, design, ...)
+{
+  counts <- round(txi$counts)
+  mode(counts) <- "integer"
+  dds <- DESeqDataSetFromMatrix(countData=counts, colData=colData, design=design, ...)
+  stopifnot(txi$countsFromAbundance %in% c("no","scaledTPM","lengthScaledTPM"))
+  if (txi$countsFromAbundance %in% c("scaledTPM","lengthScaledTPM")) {
+    message("using length scaled TPM counts from tximport")
+  } else {
+    message("using counts and average transcript lengths from tximport")
+    lengths <- txi$length
+    dimnames(lengths) <- dimnames(dds)
+    assays(dds)[["avgTxLength"]] <- lengths
+  }
+  return(dds)
+}
+
+subset_tximport = function(txi, rows, columns) {
+    txi$counts = txi$counts[rows, columns]
+    txi$abundance = txi$abundance[rows, columns]
+    txi$length = txi$length[rows, columns]
+    return(txi)
+}
+```
+
+```{r de-setup}
+library(DEGreport)
+library(vsn)
+design = ~group+treatment+phenotype
+condition = "phenotype"
+```
+
+# Differential expression
+
+```{r deseq2-expression-analysis, results='asis'}
+counts <- counts[rowSums(counts>0)>1,]
+if(exists("txi.salmon")) {
+   loginfo("Using Sailfish gene counts for the DESeq2 model.")
+   txi.salmon = subset_tximport(txi.salmon, rownames(counts), colnames(counts))
+   dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
+} else {
+  loginfo("Using counts from featureCounts for the DESeq2 model.")
+  dds = DESeqDataSetFromMatrix(countData=counts,
+      colData=summarydata, design = design  )
+}
+geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
+                 exp(mean(log(row[row != 0]))))
+dds = estimateSizeFactors(dds, geoMeans=geoMeans)
+dds = DESeq(dds)
+```
+
+## Effect of variance stabilization
+
+```{r deseq-diagnostics, results='asis'}
+par(mfrow=c(1,3))
+notAllZero <- (rowSums(counts(dds))>0)
+rld <- rlog(dds)
+vsd <- varianceStabilizingTransformation(dds)
+rlogMat <- assay(rld)
+vstMat <- assay(vsd)
+
+meanSdPlot(log2(counts(dds,normalized=TRUE)[notAllZero,] + 1))
+meanSdPlot(assay(rld[notAllZero,]))
+meanSdPlot(assay(vsd[notAllZero,]))
+```
+
+## Dispersion estimates
+
+```{r dispersion-estimate}
+plotDispEsts(dds)
+```
+
+```{r deseq2-handler}
+handle_deseq2 = function(dds, summarydata, column) {
+  all_combs = combn(levels(summarydata[,column]), 2, simplify=FALSE)
+  all_results = list()
+  contrast_strings = list()
+  for(comb in all_combs) {
+    contrast_string = paste(comb, collapse=" vs ")
+    contrast = c(column, comb)
+    res = results(dds, contrast=contrast)
+    res = res[order(res$padj),]
+    all_results = c(all_results, res)
+    contrast_strings = c(contrast_strings, contrast_string)
+  }
+  names(all_results) = contrast_strings
+  return(all_results)
+}
+```
+
+## MA-plots
+
+```{r DESeq-output, results='asis'}
+all_results = handle_deseq2(dds, summarydata, condition)
+len = length(all_results)
+nr = ceiling( len / 3 )
+nc = ceiling( len / nr )
+par(mfrow=c(nr,nc))
+for(i in seq(length(all_results))) {
+  plotMA(all_results[[i]])
+  title(paste("MA plot for contrast", names(all_results)[i]))
+}
+```
+
+## Volcano-plots
+
+```{r DESeq-volcano}
+for(i in seq(length(all_results))) {
+  stats = as.data.frame(all_results[[i]][,c(2,6)])
+  p = volcano_density_plot(stats, title=names(all_results)[i], lfc.cutoff=1.5)
+  print(p)
+}
+```
+
+## DEGreport
+
+```{r get-groups}
+get_groups <- function(d, comp, condition)
+{
+  g <- unlist(strsplit(comp," "))
+  g1 <- d$Name[d[, (names(d)==condition)]==g[1]]
+  g2 <- d$Name[d[, (names(d)==condition)]==g[3]]
+  list(g1,g2)
+}
+```
+
+### Pvalues-vs-Mean
+
+Here we plot some information about how the p-values are correlated with the
+mean or the standard deviation.
+
+```{r DEGreport-M}
+plots = list()
+scale_factor = round(1/nr * 14)
+for(i in seq(length(all_results))) {
+  plots[[i]] = degMean(all_results[[i]]$pvalue, rlogMat) +
+  theme_bw(base_size = scale_factor) +
+  ggtitle(paste0("Pvalues-vs-Mean for ", names(all_results)[i]))
+}
+do.call(grid.arrange,plots)
+```
+
+### Pvalues-vs-Variation
+
+```{r DEGreport-V}
+plots = list()
+for(i in seq(length(all_results))) {
+  plots[[i]] = degVar(all_results[[i]]$pvalue, rlogMat) +
+  theme_bw(base_size = scale_factor) +
+  ggtitle(paste0("Pvalues-vs-Variation for ", names(all_results)[i]))
+}
+do.call(grid.arrange,plots)
+```
+
+### Mean-vs-Variation
+```{r DEGreport-MV}
+plots = list()
+for(i in seq(length(all_results))) {
+  g <- get_groups(summarydata, names(all_results)[i], condition)
+  if(length(g[[1]]) < 2 | length(g[[2]]) < 2) {
+     next
+   }
+  plots[[i]] = degMV(g[[1]], g[[2]], all_results[[i]]$pvalue, counts(dds,normalized=TRUE)) +
+  theme_bw(base_size = scale_factor) +
+  ggtitle(paste0("Mean-vs-Variation for ", names(all_results)[i]))
+}
+if(length(plots) > 0) {
+    do.call(grid.arrange,plots)
+}
+```
+
+## Differentially expressed genes
+
+```{r DESeq-tables, results='asis', cache=FALSE}
+for(i in seq(length(all_results))) {
+  cat(paste("Lowest adjusted p-value hits for", names(all_results)[i]))
+  out_df = as.data.frame(all_results[[i]])
+  out_df$id = rownames(out_df)
+  out_df = out_df[, c("id", colnames(out_df)[colnames(out_df) != "id"])]
+  write.table(out_df, file=paste(names(all_results)[i], ".tsv", sep=""),
+                         quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
+  sig_genes = subset(out_df, padj < 0.05)
+  DT::datatable(sig_genes)
+  cat("\n")
+}
+```
