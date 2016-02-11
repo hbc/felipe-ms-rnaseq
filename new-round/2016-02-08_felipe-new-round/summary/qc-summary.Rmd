@@ -430,11 +430,17 @@ subset_tximport = function(txi, rows, columns) {
 ```{r de-setup}
 library(DEGreport)
 library(vsn)
-design = ~group+treatment+phenotype
+summarydata$treatment_fixed = as.character(summarydata$treatment)
+summarydata$treatment_fixed[summarydata$treatment_fixed == "LPS+IL27"] = "LPS_with_IL27"
+design = ~group+phenotype+treatment_fixed
+# page 37 from DESeq2 manual https://www.bioconductor.org/packages/3.3/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf
+design = ~phenotype + phenotype:group + phenotype:treatment
 condition = "phenotype"
 ```
 
 # Differential expression
+
+
 
 ```{r deseq2-expression-analysis, results='asis'}
 counts <- counts[rowSums(counts>0)>1,]
