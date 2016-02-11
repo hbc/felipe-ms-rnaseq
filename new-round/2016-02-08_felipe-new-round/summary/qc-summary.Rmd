@@ -394,11 +394,11 @@ Could the sorting of the cells have grabbed different populations?
 
 We can also throw up our hands and say we don't know what the hidden
 factor is between the samples that is causing the variation and try to remove
-it but it is better to try to track down what could be going o
+it but it is better to try to track down what could be going on
+
 
 Below here is a placeholder to do the analysis what we figure out
 what is going on with the samples.
-
 
 ```{r deseq2-tximport-helper-functions}
 # snagged from development version of DESeq
