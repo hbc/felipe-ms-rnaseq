@@ -430,16 +430,14 @@ subset_tximport = function(txi, rows, columns) {
 ```{r de-setup}
 library(DEGreport)
 library(vsn)
-summarydata$treatment_fixed = as.character(summarydata$treatment)
-summarydata$treatment_fixed[summarydata$treatment_fixed == "LPS+IL27"] = "LPS_with_IL27"
-design = ~group+phenotype+treatment_fixed
 # page 37 from DESeq2 manual https://www.bioconductor.org/packages/3.3/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf
-design = ~phenotype + phenotype:group + phenotype:treatment
+summarydata$treatment = factor(summarydata$treatment, levels=c("natural", "LPS", "LPS+IL27"))
+summarydata$phenotype = factor(summarydata$phenotype, levels=c("noMS", "MS"))
+design = ~group + phenotype + treatment + phenotype:treatment
 condition = "phenotype"
 ```
 
 # Differential expression
-
 
 
 ```{r deseq2-expression-analysis, results='asis'}
@@ -457,6 +455,34 @@ geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
                  exp(mean(log(row[row != 0]))))
 dds = estimateSizeFactors(dds, geoMeans=geoMeans)
 dds = DESeq(dds)
+```
+
+This is the effect of MS vs non-MS:
+
+```{r effect-of-MS}
+mseffect = results(dds, name="phenotype_MS_vs_noMS")
+msaffected_genes = rownames(subset(mseffect, padj < 0.05))
+write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+heatmap_fn(log(counts[msaffected_genes,] + 1))
+```
+
+This is the specific effect of LPS treatment on the MS samples.
+
+```{r effect-of-LPS-on-MS}
+lpsmseffect = results(dds, name="phenotypeMS.treatmentLPS")
+lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05))
+lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05 & log2FoldChange > 2))
+write.table(rownames(subset(lpsmseffect, padj < 0.05)), file="lpsms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+heatmap_fn(log(counts[lpsmsaffected_genes,] + 1))
+```
+
+This is the specific effect of LPS+IL27 treatment on the MS samples.
+
+```{r effect-of-LPS+IL27}
+il27lpseffect = results(dds, name="phenotypeMS.treatmentLPS.IL27")
 ```
 
 ## Effect of variance stabilization
