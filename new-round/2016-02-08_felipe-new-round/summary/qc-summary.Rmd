@@ -427,6 +427,9 @@ subset_tximport = function(txi, rows, columns) {
 }
 ```
 
+
+# Differential expression
+
 ```{r de-setup}
 library(DEGreport)
 library(vsn)
@@ -434,11 +437,16 @@ library(vsn)
 summarydata$treatment = factor(summarydata$treatment, levels=c("natural", "LPS", "LPS+IL27"))
 summarydata$phenotype = factor(summarydata$phenotype, levels=c("noMS", "MS"))
 design = ~group + phenotype + treatment + phenotype:treatment
-condition = "phenotype"
 ```
+Above we set up to do the analysis by converting the treatment and the phenotype
+variables to factors and setting the "natural" treatment as the base level
+for the treatment and "nonMS" as the base level for the phenotype. Then
+we set up a design that
 
-# Differential expression
-
+1. controls for the group-wise effects
+2. looks at the effect of having MS vs not having MS on the natural cells
+3. looks at the effect of LPS and LPS+IL27 treatment on the nonMS cells
+4. looks at the effect of LPS and LPS+IL27 treatment on the MS cells
 
 ```{r deseq2-expression-analysis, results='asis'}
 counts <- counts[rowSums(counts>0)>1,]
@@ -468,18 +476,21 @@ write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names
 heatmap_fn(log(counts[msaffected_genes,] + 1))
 ```
 
-This is the specific effect of LPS treatment on the MS samples.
+This is the specific effect of LPS treatment on the MS samples. This tests if
+the effect of LPS treatment is different on the MS cells compared to the LPS
+treatment of the non-MS cells.
 
 ```{r effect-of-LPS-on-MS}
 lpsmseffect = results(dds, name="phenotypeMS.treatmentLPS")
 lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05))
-lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05 & log2FoldChange > 2))
 write.table(rownames(subset(lpsmseffect, padj < 0.05)), file="lpsms-effect.txt",
             row.names=FALSE, col.names=FALSE, quote=FALSE)
 heatmap_fn(log(counts[lpsmsaffected_genes,] + 1))
 ```
 
-This is the specific effect of LPS+IL27 treatment on the MS samples.
+This is the specific effect of LPS+IL27 treatment on the MS samples. This tests
+if the effect of LPS+IL27 treatment on the MS cells is different than the
+LPS+IL27 treatment on the non-MS cells.
 
 ```{r effect-of-LPS+IL27}
 il27lpseffect = results(dds, name="phenotypeMS.treatmentLPS.IL27")
