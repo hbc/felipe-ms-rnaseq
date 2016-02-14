@@ -448,53 +448,7 @@ we set up a design that
 3. looks at the effect of LPS and LPS+IL27 treatment on the nonMS cells
 4. looks at the effect of LPS and LPS+IL27 treatment on the MS cells
 
-```{r deseq2-expression-analysis, results='asis'}
-counts <- counts[rowSums(counts>0)>1,]
-if(exists("txi.salmon")) {
-   loginfo("Using Sailfish gene counts for the DESeq2 model.")
-   txi.salmon = subset_tximport(txi.salmon, rownames(counts), colnames(counts))
-   dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
-} else {
-  loginfo("Using counts from featureCounts for the DESeq2 model.")
-  dds = DESeqDataSetFromMatrix(countData=counts,
-      colData=summarydata, design = design  )
-}
-geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
-                 exp(mean(log(row[row != 0]))))
-dds = estimateSizeFactors(dds, geoMeans=geoMeans)
-dds = DESeq(dds)
-```
-
-This is the effect of MS vs non-MS:
-
-```{r effect-of-MS}
-mseffect = results(dds, name="phenotype_MS_vs_noMS")
-msaffected_genes = rownames(subset(mseffect, padj < 0.05))
-write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
-            row.names=FALSE, col.names=FALSE, quote=FALSE)
-write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
-heatmap_fn(log(counts[msaffected_genes,] + 1))
-```
-
-This is the specific effect of LPS treatment on the MS samples. This tests if
-the effect of LPS treatment is different on the MS cells compared to the LPS
-treatment of the non-MS cells.
-
-```{r effect-of-LPS-on-MS}
-lpsmseffect = results(dds, name="phenotypeMS.treatmentLPS")
-lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05))
-write.table(rownames(subset(lpsmseffect, padj < 0.05)), file="lpsms-effect.txt",
-            row.names=FALSE, col.names=FALSE, quote=FALSE)
-heatmap_fn(log(counts[lpsmsaffected_genes,] + 1))
-```
-
-This is the specific effect of LPS+IL27 treatment on the MS samples. This tests
-if the effect of LPS+IL27 treatment on the MS cells is different than the
-LPS+IL27 treatment on the non-MS cells.
-
-```{r effect-of-LPS+IL27}
-il27lpseffect = results(dds, name="phenotypeMS.treatmentLPS.IL27")
-```
+This sets us up to do differential expression.
 
 ## Effect of variance stabilization
 
@@ -517,117 +471,79 @@ meanSdPlot(assay(vsd[notAllZero,]))
 plotDispEsts(dds)
 ```
 
-```{r deseq2-handler}
-handle_deseq2 = function(dds, summarydata, column) {
-  all_combs = combn(levels(summarydata[,column]), 2, simplify=FALSE)
-  all_results = list()
-  contrast_strings = list()
-  for(comb in all_combs) {
-    contrast_string = paste(comb, collapse=" vs ")
-    contrast = c(column, comb)
-    res = results(dds, contrast=contrast)
-    res = res[order(res$padj),]
-    all_results = c(all_results, res)
-    contrast_strings = c(contrast_strings, contrast_string)
-  }
-  names(all_results) = contrast_strings
-  return(all_results)
+```{r deseq2-expression-analysis, results='asis'}
+counts <- counts[rowSums(counts>0)>1,]
+if(exists("txi.salmon")) {
+   loginfo("Using Sailfish gene counts for the DESeq2 model.")
+   txi.salmon = subset_tximport(txi.salmon, rownames(counts), colnames(counts))
+   dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
+} else {
+  loginfo("Using counts from featureCounts for the DESeq2 model.")
+  dds = DESeqDataSetFromMatrix(countData=counts,
+      colData=summarydata, design = design  )
 }
+geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
+                 exp(mean(log(row[row != 0]))))
+dds = estimateSizeFactors(dds, geoMeans=geoMeans)
+dds = DESeq(dds)
 ```
 
-## MA-plots
+This is the effect of MS vs non-MS when there is no treatment (natural):
 
-```{r DESeq-output, results='asis'}
-all_results = handle_deseq2(dds, summarydata, condition)
-len = length(all_results)
-nr = ceiling( len / 3 )
-nc = ceiling( len / nr )
-par(mfrow=c(nr,nc))
-for(i in seq(length(all_results))) {
-  plotMA(all_results[[i]])
-  title(paste("MA plot for contrast", names(all_results)[i]))
-}
+```{r effect-of-MS}
+mseffect = results(dds, name="phenotype_MS_vs_noMS")
+msaffected_genes = rownames(subset(mseffect, padj < 0.05))
+write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+plotMA(mseffect)
+title("MS effect")
+stats = as.data.frame(mseffect[,c(2,6)])
+volcano_density_plot(stats, title="MS effect", lfc.cutoff=1.5)
 ```
 
-## Volcano-plots
+And a GO/KEGG enrichment of those genes, using the set of genes we detected in the cells as a background set and limiting the considered terms to ones which had at
+least 5 genes.
 
-```{r DESeq-volcano}
-for(i in seq(length(all_results))) {
-  stats = as.data.frame(all_results[[i]][,c(2,6)])
-  p = volcano_density_plot(stats, title=names(all_results)[i], lfc.cutoff=1.5)
-  print(p)
-}
+[GO](images/GO-mseffect.gif)
+[KEGG](web/KEGG-ms-effect.html)
+
+This is the specific effect of LPS treatment on the MS samples. This tests if
+the effect of LPS treatment is different on the MS cells compared to the LPS
+treatment of the non-MS cells.
+
+```{r effect-of-LPS-on-MS}
+lpsmseffect = results(dds, name="phenotypeMS.treatmentLPS")
+lpsmsaffected_genes = rownames(subset(lpsmseffect, padj < 0.05))
+write.table(rownames(subset(lpsmseffect, padj < 0.05)), file="lpsms-ms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+plotMA(lpsmseffect)
+title("LPS effect on MS cells")
+stats = as.data.frame(lpsmseffect[,c(2,6)])
+volcano_density_plot(stats, title="LPS effect on MS cells", lfc.cutoff=1.5)
 ```
 
-## DEGreport
+And the GO/KEGG enrichment:
 
-```{r get-groups}
-get_groups <- function(d, comp, condition)
-{
-  g <- unlist(strsplit(comp," "))
-  g1 <- d$Name[d[, (names(d)==condition)]==g[1]]
-  g2 <- d$Name[d[, (names(d)==condition)]==g[3]]
-  list(g1,g2)
-}
+[GO](images/GO-mslps-effect.gif)
+[KEGG](web/KEGG-lps-ms-effect.html)
+
+This is the specific effect of LPS+IL27 treatment on the MS samples. This tests
+if the effect of LPS+IL27 treatment on the MS cells is different than the
+LPS+IL27 treatment on the non-MS cells.
+
+```{r effect-of-LPS+IL27-on-MS}
+il27lpsmseffect = results(dds, name="phenotypeMS.treatmentLPS.IL27")
+write.table(rownames(subset(il27lpsmseffect, padj < 0.05)),
+            file="il27lpsms-effect-ms.txt", row.names=FALSE, col.names=FALSE,
+            quote=FALSE)
+plotMA(il27lpsmseffect)
+title("IL27+LPS effect on MS cells")
+stats = as.data.frame(il27lpsmseffect[,c(2,6)])
+volcano_density_plot(stats, title="IL27+LPS effect on MS cells", lfc.cutoff=1.5)
 ```
 
-### Pvalues-vs-Mean
+And the GO/KEGG enrichment:
 
-Here we plot some information about how the p-values are correlated with the
-mean or the standard deviation.
-
-```{r DEGreport-M}
-plots = list()
-scale_factor = round(1/nr * 14)
-for(i in seq(length(all_results))) {
-  plots[[i]] = degMean(all_results[[i]]$pvalue, rlogMat) +
-  theme_bw(base_size = scale_factor) +
-  ggtitle(paste0("Pvalues-vs-Mean for ", names(all_results)[i]))
-}
-do.call(grid.arrange,plots)
-```
-
-### Pvalues-vs-Variation
-
-```{r DEGreport-V}
-plots = list()
-for(i in seq(length(all_results))) {
-  plots[[i]] = degVar(all_results[[i]]$pvalue, rlogMat) +
-  theme_bw(base_size = scale_factor) +
-  ggtitle(paste0("Pvalues-vs-Variation for ", names(all_results)[i]))
-}
-do.call(grid.arrange,plots)
-```
-
-### Mean-vs-Variation
-```{r DEGreport-MV}
-plots = list()
-for(i in seq(length(all_results))) {
-  g <- get_groups(summarydata, names(all_results)[i], condition)
-  if(length(g[[1]]) < 2 | length(g[[2]]) < 2) {
-     next
-   }
-  plots[[i]] = degMV(g[[1]], g[[2]], all_results[[i]]$pvalue, counts(dds,normalized=TRUE)) +
-  theme_bw(base_size = scale_factor) +
-  ggtitle(paste0("Mean-vs-Variation for ", names(all_results)[i]))
-}
-if(length(plots) > 0) {
-    do.call(grid.arrange,plots)
-}
-```
-
-## Differentially expressed genes
-
-```{r DESeq-tables, results='asis', cache=FALSE}
-for(i in seq(length(all_results))) {
-  cat(paste("Lowest adjusted p-value hits for", names(all_results)[i]))
-  out_df = as.data.frame(all_results[[i]])
-  out_df$id = rownames(out_df)
-  out_df = out_df[, c("id", colnames(out_df)[colnames(out_df) != "id"])]
-  write.table(out_df, file=paste(names(all_results)[i], ".tsv", sep=""),
-                         quote=FALSE, sep="\t", row.names=FALSE, col.names=TRUE)
-  sig_genes = subset(out_df, padj < 0.05)
-  DT::datatable(sig_genes)
-  cat("\n")
-}
-```
+[GO](images/GO-msill27lps-effect.gif)
+[KEGG](web/KEGG-lps-il27-ms-effect.html)
