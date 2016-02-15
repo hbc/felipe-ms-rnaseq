@@ -82,6 +82,14 @@ metadata = summarydata[, !colnames(summarydata) %in% known_columns, drop=FALSE]
 metadata = metadata[, c("treatment", "group", "phenotype")]
 ```
 
+```{r sanitize-datatable}
+sanitize_datatable = function(df, ...) {
+ # remove dashes which cause wrapping
+ DT::datatable(df, ..., rownames=gsub("-", "_", rownames(df)),
+                   colnames=gsub("-", "_", colnames(df)))
+}
+```
+
 ```{r set-random-seed}
 # set seed for reproducibility
 set.seed(1454944673)
@@ -89,7 +97,7 @@ set.seed(1454944673)
 
 ## Sample metadata
 ```{r summary-table, echo=FALSE, cache=FALSE}
-DT::datatable(summarydata)
+sanitize_datatable(summarydata, style='bootstrap')
 ```
 
 ```{r heatmap-function}
@@ -285,7 +293,7 @@ Felipe, could you double check that the samples and their metadata matched up
 properly? Could something have gotten swapped along the way?
 
 ```{r samples-metadata, cache=FALSE}
-DT:::datatable(metadata)
+sanitize_datatable(metadata)
 ```
 
 PCA uses the most variable genes to cluster the cells.
@@ -336,7 +344,7 @@ XIST tops the most variable list, are some of these samples females and
 the other samples males?
 
 ```{r mostvar-table, cache=FALSE}
-DT::datatable(head(mostvar, 500))
+sanitize_datatable(head(mostvar, 500))
 ```
 
 XIST expression is highly variable between the samples, high in some and almost
@@ -365,7 +373,7 @@ what cell types they might be markers for:
 
 ```{r read-enrichr, cache=FALSE}
 enrichr_types = read.table("web/cell-types-top500var.txt", header=TRUE, sep="\t")
-DT::datatable(enrichr_types)
+sanitize_datatable(enrichr_types)
 ```
 
 Here is a heatmap of the counts for the genes associated with CD33+ myeloid cells:
