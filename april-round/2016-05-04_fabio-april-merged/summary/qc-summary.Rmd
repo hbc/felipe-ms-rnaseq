@@ -373,6 +373,7 @@ and so much noise it will be hard to pull out a reliable signal.
 ```{r PC1-PC2}
 pca_plot(comps, 1, 2, "condition")
 pca_plot(comps, 1, 2, "treatment")
+pca_plot(comps, 1, 2, "patient")
 ```
 
 ### PC3 vs. PC4
@@ -384,6 +385,7 @@ going to see a strong signal with these comparisons.
 ```{r PC3-PC4}
 pca_plot(comps, 3, 4, "condition")
 pca_plot(comps, 3, 4, "treatment")
+pca_plot(comps, 3, 4, "patient")
 ```
 
 ### PC5 vs. PC6
@@ -393,6 +395,7 @@ of the information is captured by the first 4 components.
 ```{r PC5-PC6}
 pca_plot(comps, 5, 6, "condition")
 pca_plot(comps, 5, 6, "treatment")
+pca_plot(comps, 5, 6, "patient")
 ```
 
 ### Variance explained by component
