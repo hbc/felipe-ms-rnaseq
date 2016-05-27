@@ -580,6 +580,8 @@ summarydata$phenotreat = paste(summarydata$phenotype, summarydata$treatment,
 design = ~group+phenotreat
 dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
 dds = DESeq(dds)
+symbols = conversions[, c("ensembl_gene_id", "hgnc_symbol")]
+colnames(symbols) = c("id", "symbol")
 ```
 
 ## MS LPS+IL27 vs LPS
@@ -588,11 +590,14 @@ Higher fold changes mean the gene is higher in the LPS+IL27 treated samples.
 
 ```{r ms-lpsil27-vs-lps}
 ms_il27_lps = results(dds, contrast=c("phenotreat", "MS_LPS.IL27", "MS_LPS"))
-write.table(ms_il27_lps, file="ms-il27-vs-lps.txt", row.names=FALSE,
-            col.names=FALSE, quote=FALSE)
 stats = as.data.frame(ms_il27_lps[,c(2,6)])
 volcano_density_plot(stats, title="MS LPS+IL27 vs LPS", lfc.cutoff=1.5)
 ms_il27_lps_sig = subset(ms_il27_lps, padj < 0.1)
+ms_il27_lps = cbind(data.frame(id=as.character(rownames(ms_il27_lps))),
+                    ms_il27_lps)
+ms_il27_lps = data.frame(ms_il27_lps) %>% left_join(symbols, by="id")
+write.table(ms_il27_lps, file="ms-il27-vs-lps.txt", row.names=FALSE,
+            col.names=TRUE, quote=FALSE)
 ```
 
 There are `r nrow(ms_il27_lps_sig)` genes significantly different using an
@@ -610,6 +615,11 @@ write.table(hc_il27_lps, file="hc-il27-vs-lps.txt", row.names=FALSE,
 stats = as.data.frame(hc_il27_lps[,c(2,6)])
 volcano_density_plot(stats, title="HC LPS+IL27 vs LPS", lfc.cutoff=1.5)
 hc_il27_lps_sig = subset(hc_il27_lps, padj < 0.1)
+hc_il27_lps = cbind(data.frame(id=rownames(hc_il27_lps)),
+                              hc_il27_lps)
+hc_il27_lps = data.frame(hc_il27_lps) %>% left_join(symbols, by="id")
+write.table(hc_il27_lps, file="hc-il27-vs-lps.txt", row.names=FALSE,
+            col.names=TRUE, quote=FALSE)
 ```
 
 There are `r nrow(hc_il27_lps_sig)` genes significantly different using an
@@ -622,11 +632,14 @@ Higher fold changes mean the gene is higher in the LPS MS samples.
 
 ```{r ms-lps-vs-hc-lps}
 ms_lps_hc_lps = results(dds, contrast=c("phenotreat", "MS_LPS", "noMS_LPS"))
-write.table(ms_lps_hc_lps, file="ms-lps-vs-hc-lps.txt", row.names=FALSE,
-            col.names=FALSE, quote=FALSE)
 stats = as.data.frame(ms_lps_hc_lps[,c(2,6)])
 volcano_density_plot(stats, title="MS LPS vs HC LPS", lfc.cutoff=1.5)
 ms_lps_hc_lps_sig = subset(ms_lps_hc_lps, padj < 0.1)
+ms_lps_hc_lps = cbind(data.frame(id=rownames(ms_lps_hc_lps)),
+                              ms_lps_hc_lps)
+ms_lps_hc_lps = data.frame(ms_lps_hc_lps) %>% left_join(symbols, by="id")
+write.table(ms_lps_hc_lps, file="ms-lps-vs-hc-lps.txt", row.names=FALSE,
+            col.names=TRUE, quote=FALSE)
 ```
 
 ## MS LPS+IL27 vs HC LPS+IL27
@@ -635,11 +648,14 @@ Higher fold changes mean the gene is higher in the LPS+IL27 MS samples.
 
 ```{r ms-lpsil27-vs-hc-lpsil27}
 ms_il27_hc_il27 = results(dds, contrast=c("phenotreat", "MS_LPS+IL27", "noMS_LPS+IL27"))
-write.table(ms_il27_hc_il27, file="ms-il27-vs-hc-il27.txt", row.names=FALSE,
-            col.names=FALSE, quote=FALSE)
 stats = as.data.frame(ms_il27_hc_il27[,c(2,6)])
 volcano_density_plot(stats, title="MS LPS+IL27 vs HC LPS+IL27", lfc.cutoff=1.5)
 ms_il27_hc_il27_sig = subset(ms_il27_hc_il27, padj < 0.1)
+ms_il27_hc_il27 = cbind(data.frame(id=rownames(ms_il27_hc_il27)),
+                              ms_il27_hc_il27)
+ms_il27_hc_il27 = data.frame(ms_il27_hc_il27) %>% left_join(symbols, by="id")
+write.table(ms_il27_hc_il27, file="ms-il27-vs-hc-il27.txt", row.names=FALSE,
+            col.names=TRUE, quote=FALSE)
 ```
 
 There are `r nrow(ms_lps_hc_lps_sig)` genes significantly different using an
@@ -654,11 +670,14 @@ than the HC untreated samples.
 ```{r ms-untreated-vs-hc-untreated}
 ms_natural_hc_natural = results(dds, contrast=c("phenotreat", "MS_natural",
                                                 "noMS_natural"))
-write.table(ms_natural_hc_natural, file="ms-natural-vs-hc-natural.txt",
-            row.names=FALSE, col.names=FALSE, quote=FALSE)
 stats = as.data.frame(ms_natural_hc_natural[,c(2,6)])
 volcano_density_plot(stats, title="MS natural vs HC natural", lfc.cutoff=1.5)
 ms_natural_hc_natural_sig = subset(ms_natural_hc_natural, padj < 0.1)
+ms_natural_hc_natural = cbind(data.frame(id=rownames(ms_natural_hc_natural)),
+                              ms_natural_hc_natural)
+ms_natural_hc_natural = data.frame(ms_natural_hc_natural) %>% left_join(symbols, by="id")
+write.table(ms_natural_hc_natural, file="ms-natural-vs-hc-natural.txt",
+            row.names=FALSE, col.names=TRUE, quote=FALSE)
 ```
 
 There are `r nrow(ms_natural_hc_natural_sig)` genes significantly different using an
