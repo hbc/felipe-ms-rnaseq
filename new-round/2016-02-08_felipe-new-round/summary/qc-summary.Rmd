@@ -393,6 +393,7 @@ heatmap_fn(cd33_counts, fontsize=6)
 Here is a heatmap of the counts for the genes in the CD14+ monocytes:
 
 ```{r cd14-genes-table, cache=FALSE}
+library(pheatmap)
 cd14_genes = unlist(strsplit(as.character(enrichr_types[2, "Genes"]), ";"))
 cd14_ids = subset(conversions, hgnc_symbol %in% cd14_genes)$ensembl_gene_id
 cd14_counts = subset(conversions, hgnc_symbol %in% cd14_genes)$ensembl_gene_id
@@ -440,6 +441,25 @@ subset_tximport = function(txi, rows, columns) {
 
 
 # Differential expression
+Before we do differential expression we need to combine the replicate samples.
+
+```{r combine-replicates}
+summarydata$samplename = summarydata$sample
+combined = counts %>% add_rownames() %>%
+  tidyr::gather(sample, count, -rowname) %>%
+  left_join(summarydata, by=c("sample"="Name")) %>%
+  dplyr::select(rowname, samplename, count) %>%
+  group_by(rowname, samplename) %>%
+  summarise(total=sum(count)) %>%
+  tidyr::spread(samplename, total) %>% as.data.frame()
+rownames(combined) = combined$rowname
+combined$rowname = NULL
+metasum = unique(summarydata[, c("samplename", "fraction", "treatment", "group",
+                                 "phenotype", "sample")])
+counts = combined
+summarydata = metasum
+rownames(summarydata) = summarydata$samplename
+```
 
 ```{r de-setup}
 library(DEGreport)
@@ -461,42 +481,14 @@ we set up a design that
 
 This sets us up to do differential expression.
 
-## Effect of variance stabilization
-
-```{r deseq-diagnostics, results='asis'}
-par(mfrow=c(1,3))
-notAllZero <- (rowSums(counts(dds))>0)
-rld <- rlog(dds)
-vsd <- varianceStabilizingTransformation(dds)
-rlogMat <- assay(rld)
-vstMat <- assay(vsd)
-
-meanSdPlot(log2(counts(dds,normalized=TRUE)[notAllZero,] + 1))
-meanSdPlot(assay(rld[notAllZero,]))
-meanSdPlot(assay(vsd[notAllZero,]))
-```
-
-## Dispersion estimates
-
-```{r dispersion-estimate}
-plotDispEsts(dds)
-```
-
 ```{r deseq2-expression-analysis, results='asis'}
 counts <- counts[rowSums(counts>0)>1,]
-if(exists("txi.salmon")) {
-   loginfo("Using Sailfish gene counts for the DESeq2 model.")
-   txi.salmon = subset_tximport(txi.salmon, rownames(counts), colnames(counts))
-   dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
-} else {
-  loginfo("Using counts from featureCounts for the DESeq2 model.")
-  dds = DESeqDataSetFromMatrix(countData=counts,
-      colData=summarydata, design = design  )
-}
-geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
-                 exp(mean(log(row[row != 0]))))
-dds = estimateSizeFactors(dds, geoMeans=geoMeans)
+dds = DESeqDataSetFromMatrix(countData=counts, colData=summarydata,
+                             design=design)
+dds = estimateSizeFactors(dds)
 dds = DESeq(dds)
+febdds = dds
+save(febdds, file="february-dds.RData")
 ```
 
 This is the effect of MS vs non-MS when there is no treatment (natural):
@@ -578,7 +570,7 @@ and look for these differences.
 summarydata$phenotreat = paste(summarydata$phenotype, summarydata$treatment,
                                sep="_")
 design = ~group+phenotreat
-dds = DESeqDataSetFromTximport(txi.salmon, colData=summarydata, design=design)
+dds = DESeqDataSetFromMatrix(counts, colData=summarydata, design=design)
 dds = DESeq(dds)
 symbols = conversions[, c("ensembl_gene_id", "hgnc_symbol")]
 colnames(symbols) = c("id", "symbol")
@@ -694,4 +686,4 @@ untreated HC samples.
 
 [LPS+IL27 MS cells vs LPS+IL27 HC cells](ms-il27-vs-hc-il27.txt)
 
-[Untreated MS cells vs untreated HC cells](ms-natural-vs-hs-natural.txt)
+[Untreated MS cells vs untreated HC cells](ms-natural-vs-hc-natural.txt)
