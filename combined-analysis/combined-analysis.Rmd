@@ -6,6 +6,8 @@ output:
     code_folding: show
     highlight: zenburn
     theme: flatly
+header-includes:
+   - \usepackage{amsmath}
 ---
 
 ```{r setup, echo=FALSE}
@@ -62,17 +64,99 @@ aprmeta = aprsum[, c("group", "treat", "phenotype")]
 febmeta$month = "feb"
 aprmeta$month = "apr"
 febmeta$group = paste0("f", febmeta$group)
-aprmeta$group = paste0("f", aprmeta$group)
+aprmeta$group = paste0("a", aprmeta$group)
 ```
 
 Now we can combine the metadata and the counts, replace missing values with 0
-and reorder the metadata and the counts so they are in the same order.
+and reorder the metadata and the counts so they are in the same order. We'll
+also drop the untreated samples since we don't have those in the April run
+and that causes some issues in convergence.
 
 ```{r final-combine}
-counts = gdata::cbindX(aprcounts, febcounts)
-counts[is.na(counts)] = 0
-metadata = rbind(aprmeta, febmeta)
-counts = counts[,rownames(metadata)]
+library(dplyr)
+melted = rbind(reshape2::melt(aprcounts), reshape2::melt(febcounts))
+colnames(melted) = c("gene", "sample", "count")
+combined = melted %>% tidyr::spread(sample, count) %>% as.data.frame()
+rownames(combined) = combined$gene
+combined$gene = NULL
+combined[is.na(combined)] = 0
+counts = combined
+metadata = rbind(febmeta, aprmeta)
+metadata$group = as.factor(metadata$group)
+metadata$treat = relevel(as.factor(metadata$treat), ref="U")
+metadata$phenotype = relevel(as.factor(metadata$phenotype), ref="noMS")
+counts = counts[, rownames(metadata)]
 ```
 
 And we're good to go.
+
+# Differential expresssion
+
+We fit a model looking only within patients that are in the same `group`, since
+they are matched. Then we fit a term for `phenotype`, `treatment` and an
+interaction term between `phenotype` and `treatment` so we can look at the
+specific effects of each treatment. We fit this model:
+
+$$Y \sim group + treat + pheno + pheno:treat$$
+
+Which expands to:
+
+$$Y \sim \beta_0 + \beta_{1}x_{1} + \beta_{2}x_{2} + \beta_{3}x_{3} +
+\beta_{4}x_{1}x_{3} + \beta_{5}x_{2}x_{3}$$
+
+where
+
+$x_{1} = \left\{
+\begin{array}{ll}
+      1 & \text{treat is L} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+$x_{2} = \left\{
+\begin{array}{ll}
+      1 & \text{treat is I} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+$x_{3} = \left\{
+\begin{array}{ll}
+      1 & \text{pheno is MS} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+
+```{r fit-model}
+design = ~group+treat+phenotype+phenotype:treat
+dds = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=design)
+dds = estimateSizeFactors(dds)
+dds = DESeq(dds)
+```
+
+## MS vs nonMS
+Here we lookg at the baseline difference between the `MS` and `noMS`
+untreated samples.
+
+```{r ms-effects}
+mseffect = results(dds, name="phenotype_MS_vs_noMS")
+msaffected_genes = rownames(subset(mseffect, padj < 0.05))
+write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+plotMA(mseffect, ylim=c(-35,35))
+title("MS effect")
+```
+
+```{r lps-i-ms-effect}
+lpsimseffect = results(dds, name="treatLI.phenotypeMS")
+msaffected_genes = rownames(subset(mseffect, padj < 0.05))
+write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
+            row.names=FALSE, col.names=FALSE, quote=FALSE)
+write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+foo = subset(lpsimseffect, baseMean > 10)
+plotMA(foo, ylim=c(-35, 35))
+plotMA(lpsimseffect, ylim=c(-35,35))
+title("MS effect")
+```
