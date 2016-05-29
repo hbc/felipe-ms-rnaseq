@@ -1,0 +1,78 @@
+---
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+    highlight: zenburn
+    theme: flatly
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(tidy=TRUE, highlight=TRUE, dev="png",
+               cache=TRUE, highlight=TRUE, autodep=TRUE, warning=FALSE, error=FALSE,
+               message=FALSE, prompt=TRUE, comment='', fig.cap='')
+```
+
+# Combined analysis
+We are going to combine the samples that were run in February and the samples
+that were run in April to have more samples to increase our power to find
+differences between the samples.
+
+```{r load-deseq-objects}
+load("april.RData")
+load("february.RData")
+library(DESeq2)
+aprcounts = counts(aprdds, normalized=FALSE)
+aprsummary = colData(aprdds)
+febcounts = counts(febdds, normalized=FALSE)
+febsummary = colData(febdds)
+```
+
+The sample data is coded a little bit different for both runs, so we will have
+to normalize them so they are the same. We will first drop everything except
+the metadata from the summary dataframes.
+
+```{r small-summary}
+febsum = febsummary[, c("samplename", "fraction", "treatment", "group",
+                        "phenotype")]
+aprsum = aprsummary[, c("Name", "condition", "treatment", "patient")]
+```
+
+Now we need to recode some of the columns. We'll add a 'phenotype' column
+to the April data.
+
+```{r add-phenotype-column}
+aprsum$phenotype = ifelse(aprsum$condition == "HC", "noMS", "MS")
+```
+
+We'll recode the treatment factors to be `L` for `LPS` and `LI` for `LPS+IL27`
+and `U` for untreated to avoid using a plus. We'll also rename the `patient`
+column to `group` for the April samples and add a `a` or `f` prefix to make the
+groups unique across months. Finally we add a column for which month the
+sequencing was done.
+
+```{r recode-treatment-columns}
+aprsum$treat = ifelse(aprsum$treatment == "LPS", "L", "LI")
+febsum$treat = ifelse(febsum$treatment == "LPS", "L",
+               ifelse(febsum$treatment == "natural", "U", "LI"))
+aprsum$group = aprsum$patient
+febmeta = febsum[, c("group", "treat", "phenotype")]
+aprmeta = aprsum[, c("group", "treat", "phenotype")]
+febmeta$month = "feb"
+aprmeta$month = "apr"
+febmeta$group = paste0("f", febmeta$group)
+aprmeta$group = paste0("f", aprmeta$group)
+```
+
+Now we can combine the metadata and the counts, replace missing values with 0
+and reorder the metadata and the counts so they are in the same order.
+
+```{r final-combine}
+counts = gdata::cbindX(aprcounts, febcounts)
+counts[is.na(counts)] = 0
+metadata = rbind(aprmeta, febmeta)
+counts = counts[,rownames(metadata)]
+```
+
+And we're good to go.
