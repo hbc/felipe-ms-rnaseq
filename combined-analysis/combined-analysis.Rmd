@@ -88,6 +88,15 @@ metadata$phenotype = relevel(as.factor(metadata$phenotype), ref="noMS")
 counts = counts[, rownames(metadata)]
 ```
 
+And pull in the gene symbols from biomaRt.
+
+```{r biomart-symbols}
+mart = biomaRt::useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
+symbols <- biomaRt::getBM(attributes = c("ensembl_gene_id",
+                                         "external_gene_name", "hgnc_symbol"),
+                          mart=mart)
+```
+
 And we're good to go.
 
 # Differential expresssion
@@ -122,41 +131,129 @@ $x_{2} = \left\{
 
 $x_{3} = \left\{
 \begin{array}{ll}
-      1 & \text{pheno is MS} \\
+      1 & \text{pheno is noMS} \\
       0 & \text{otherwise} \\
 \end{array}
 \right.$
 
+This gives the following meaning to the coefficients:
+
+$\beta_{0} = \text{baseline expression in untreated, non MS cells}$
+
+$\beta_{1} = \text{effect of L treatment on non-MS cells}$
+
+$\beta_{2} = \text{effect of I treatment on non-MS cells}$
+
+$\beta_{3} = \text{effect of MS on untreated cells}$
+
+$\beta_{4} = \text{specific effect of L treatment on MS cells}$
+
+$\beta_{5} = \text{specific effect of I treatment on MS cells}$
 
 ```{r fit-model}
 design = ~group+treat+phenotype+phenotype:treat
 dds = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=design)
 dds = estimateSizeFactors(dds)
 dds = DESeq(dds)
+plotDispEsts(dds)
 ```
 
 ## MS vs nonMS
-Here we lookg at the baseline difference between the `MS` and `noMS`
-untreated samples.
+Here we looking at the difference between the `MS` and `noMS` cells,
+when the cells are untreated. We are testing the significance of `$\beta_{3}$`
+listed above.
+
+Positive $log_{2}$ fold changes are higher in the `MS untreated`
+samples than the `noMS untreated` samples.
+`
+We can see from the MA plot some evidence that there are a set of genes
+expressed at a low levels that are preferentially on or off in the MS cells.
 
 ```{r ms-effects}
+library(dplyr)
 mseffect = results(dds, name="phenotype_MS_vs_noMS")
-msaffected_genes = rownames(subset(mseffect, padj < 0.05))
-write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
-            row.names=FALSE, col.names=FALSE, quote=FALSE)
-write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
 plotMA(mseffect, ylim=c(-35,35))
 title("MS effect")
+mseffect = mseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(mseffect, file="mseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
 ```
 
-```{r lps-i-ms-effect}
-lpsimseffect = results(dds, name="treatLI.phenotypeMS")
-msaffected_genes = rownames(subset(mseffect, padj < 0.05))
-write.table(rownames(subset(mseffect, padj < 0.05)), file="ms-effect.txt",
-            row.names=FALSE, col.names=FALSE, quote=FALSE)
-write.table(rownames(mseffect), file="expressed.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
-foo = subset(lpsimseffect, baseMean > 10)
-plotMA(foo, ylim=c(-35, 35))
-plotMA(lpsimseffect, ylim=c(-35,35))
-title("MS effect")
+## Effect of L treatment on noMS samples
+Here we look at the difference between the `L` treated `noMS` samples
+and the untreated noMS samples. We are testing the significance of
+$\beta_{1}$ above.
+
+Positive $log_{2}$ fold changes are higher in the `noMS LPS` treated
+samples than the `noMS untreated` samples.
+
+```{r l-noMS}
+lps_nomseffect = results(dds, name="treat_L_vs_U")
+plotMA(lps_nomseffect, ylim=c(-35,35))
+title("L treatment on noMS cells")
+lps_nomseffect = lps_nomseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(lps_nomseffect, file="lps_nomseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## Effect of LI treatment on noMS samples
+Here we look at the difference between the `LI treated noMS` samples
+and the `untreated noMS` samples. We are testing $\beta_{2}$ above.
+
+Positive $log_{2}$ fold changes are higher in the `LI treated noMS`
+samples than the `noMS untreated` samples.
+
+```{r li-noMS}
+li_nomseffect = results(dds, name="treat_LI_vs_U")
+plotMA(li_nomseffect, ylim=c(-35,35))
+title("LI treatment on noMS cells")
+li_nomseffect = li_nomseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(li_nomseffect, file="li_nomseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## Specific effect of L treatment on MS samples
+Here we look at the specific effect that treating with LPS has on the MS samples.
+We are testing the $\beta_{4}$ coefficient above.
+
+```{r l-ms-effect}
+l_mseffect = results(dds, name="treatL.phenotypeMS")
+plotMA(l_mseffect, ylim=c(-35,35))
+title("L treatment on MS cells")
+l_mseffect = l_mseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(l_mseffect, file="l_mseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## Specific effect of LI treatment on MS samples
+Finally we look at the specific effect that treating with LPS+IL27 has on the
+MS samples. We are testing the $\beta_{5}$ coefficient above.
+
+```{r li-ms-effect}
+li_mseffect = results(dds, name="treatLI.phenotypeMS")
+plotMA(li_mseffect, ylim=c(-35,35))
+title("LI treatment on MS cells")
+li_mseffect = li_mseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(li_mseffect, file="li_mseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
 ```
