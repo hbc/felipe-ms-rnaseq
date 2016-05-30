@@ -85,6 +85,9 @@ metadata = rbind(febmeta, aprmeta)
 metadata$group = as.factor(metadata$group)
 metadata$treat = relevel(as.factor(metadata$treat), ref="U")
 metadata$phenotype = relevel(as.factor(metadata$phenotype), ref="noMS")
+metadata$phenotreat = relevel(as.factor(
+  paste(metadata$phenotype, metadata$treat, sep="_")), ref="noMS_U")
+metadata$sample = rownames(metadata)
 counts = counts[, rownames(metadata)]
 ```
 
@@ -97,16 +100,68 @@ symbols <- biomaRt::getBM(attributes = c("ensembl_gene_id",
                           mart=mart)
 ```
 
-And we're good to go.
+And we're almost good to go.
+
+# Data cleaning
+Before we do differential expression, we need to throw away samples that are
+very different from all other samples. I did a version of the analysis leaving
+in all of the samples and a few outlier samples were dominating the regression
+fit, leading to results that didn't make much sense.
+
+```{r pca}
+ddspca = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=~treat+phenotype+phenotype:treat)
+vst = varianceStabilizingTransformation(dds)
+pca_loadings = function(object, ntop=500) {
+  rv <- matrixStats::rowVars(assay(object))
+  select <- order(rv, decreasing = TRUE)[seq_len(min(ntop,
+      length(rv)))]
+  pca <- prcomp(t(assay(object)[select, ]))
+  percentVar <- pca$sdev^2/sum(pca$sdev^2)
+  names(percentVar) = colnames(pca$x)
+  pca$percentVar = percentVar
+  return(pca)}
+pc = pca_loadings(vst)
+comps = data.frame(pc$x)
+comps$Name = rownames(comps)
+library(dplyr)
+comps = comps %>% left_join(as.data.frame(metadata), by=c("Name"="sample"))
+colorby = "phenotreat"
+pca_plot = function(comps, nc1, nc2, colorby) {
+   c1str = paste0("PC", nc1)
+   c2str = paste0("PC", nc2)
+  ggplot(comps, aes_string(c1str, c2str, color=colorby)) +
+    geom_point() + theme_bw() +
+    xlab(paste0(c1str, ": ", round(pc$percentVar[nc1] * 100), "% variance")) +
+    ylab(paste0(c2str, ": ", round(pc$percentVar[nc2] * 100), "% variance"))
+}
+library(viridis)
+ggplot(comps, aes(PC1, PC2, color=treat, shape=phenotype, size=month)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+ggplot(comps, aes(PC3, PC4, color=treat, shape=phenotype)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+ggplot(comps, aes(PC5, PC6, color=treat, shape=phenotype)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+pca_plot(comps, 1, 2, "phenotreat") + scale_color_viridis(discrete=TRUE)
+pca_plot(comps, 3, 4, "phenotreat") + scale_color_viridis(discrete=TRUE)
+```
 
 # Differential expresssion
 
-We fit a model looking only within patients that are in the same `group`, since
-they are matched. Then we fit a term for `phenotype`, `treatment` and an
-interaction term between `phenotype` and `treatment` so we can look at the
-specific effects of each treatment. We fit this model:
+I originally fit a model looking only within patients that are in the same
+`group`, since they are matched. This gave a lot of results that looked like
+spurious results; I think the reason for this is there are very few groups which
+have the full complement of patients, so we ended up fitting to just one or two
+samples.
 
-$$Y \sim group + treat + pheno + pheno:treat$$
+I then dropped the group term, but this introduced spurious results from the
+different February and April sequencing. I added a term for month, and dropped
+the group, and that seems to give more sensible results.
+
+Then we fit a term for `phenotype`, `treatment` and an interaction term between
+`phenotype` and `treatment` so we can look at the specific effects of each
+treatment. We fit this model:
+
+$$Y \sim month + treat + pheno + pheno:treat$$
 
 Which expands to:
 
@@ -151,7 +206,7 @@ $\beta_{4} = \text{specific effect of L treatment on MS cells}$
 $\beta_{5} = \text{specific effect of I treatment on MS cells}$
 
 ```{r fit-model}
-design = ~group+treat+phenotype+phenotype:treat
+design = ~month+phenotype+treat+phenotype:treat
 dds = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=design)
 dds = estimateSizeFactors(dds)
 dds = DESeq(dds)
@@ -176,13 +231,12 @@ plotMA(mseffect, ylim=c(-35,35))
 title("MS effect")
 mseffect = mseffect %>% as.data.frame() %>%
   add_rownames() %>%
-  rename(gene=rowname) %>%
+  dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
 write.table(mseffect, file="mseffect.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
 ```
-
 ## Effect of L treatment on noMS samples
 Here we look at the difference between the `L` treated `noMS` samples
 and the untreated noMS samples. We are testing the significance of
@@ -197,7 +251,7 @@ plotMA(lps_nomseffect, ylim=c(-35,35))
 title("L treatment on noMS cells")
 lps_nomseffect = lps_nomseffect %>% as.data.frame() %>%
   add_rownames() %>%
-  rename(gene=rowname) %>%
+  dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
 write.table(lps_nomseffect, file="lps_nomseffect.csv", row.names=FALSE,
@@ -217,7 +271,7 @@ plotMA(li_nomseffect, ylim=c(-35,35))
 title("LI treatment on noMS cells")
 li_nomseffect = li_nomseffect %>% as.data.frame() %>%
   add_rownames() %>%
-  rename(gene=rowname) %>%
+  dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
 write.table(li_nomseffect, file="li_nomseffect.csv", row.names=FALSE,
@@ -229,12 +283,12 @@ Here we look at the specific effect that treating with LPS has on the MS samples
 We are testing the $\beta_{4}$ coefficient above.
 
 ```{r l-ms-effect}
-l_mseffect = results(dds, name="treatL.phenotypeMS")
+l_mseffect = results(dds, name="phenotypeMS.treatL")
 plotMA(l_mseffect, ylim=c(-35,35))
 title("L treatment on MS cells")
 l_mseffect = l_mseffect %>% as.data.frame() %>%
   add_rownames() %>%
-  rename(gene=rowname) %>%
+  dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
 write.table(l_mseffect, file="l_mseffect.csv", row.names=FALSE,
@@ -246,14 +300,32 @@ Finally we look at the specific effect that treating with LPS+IL27 has on the
 MS samples. We are testing the $\beta_{5}$ coefficient above.
 
 ```{r li-ms-effect}
-li_mseffect = results(dds, name="treatLI.phenotypeMS")
+li_mseffect = results(dds, contrast=c("phenotypeMS.treatLI", "phenotypeMS.treatL")
 plotMA(li_mseffect, ylim=c(-35,35))
 title("LI treatment on MS cells")
 li_mseffect = li_mseffect %>% as.data.frame() %>%
   add_rownames() %>%
-  rename(gene=rowname) %>%
+  dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
 write.table(li_mseffect, file="li_mseffect.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
+```
+
+```{r plotgenes}
+ncounts = counts(dds, normalized=TRUE) %>%
+  as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  tidyr::gather(sample, count, -gene) %>%
+  left_join(as.data.frame(colData(dds)), by="sample")
+ggplot(subset(ncounts, gene == "ENSG00000255800"),
+       aes(sample, count, color=phenotreat)) +
+  geom_point() + scale_y_sqrt()
+
+ggplot(subset(ncounts, gene == "ENSG00000108702"),
+       aes(sample, count, color=phenotype)) +
+  geom_point() + scale_y_sqrt() + facet_wrap(~treat, scale='free_x')
+rowdata = rowData(dds)
+rowdata$gene = rownames(dds)
 ```
