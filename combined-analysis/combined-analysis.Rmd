@@ -300,7 +300,7 @@ Finally we look at the specific effect that treating with LPS+IL27 has on the
 MS samples. We are testing the $\beta_{5}$ coefficient above.
 
 ```{r li-ms-effect}
-li_mseffect = results(dds, contrast=c("phenotypeMS.treatLI", "phenotypeMS.treatL")
+li_mseffect = results(dds, name="phenotypeMS.treatLI")
 plotMA(li_mseffect, ylim=c(-35,35))
 title("LI treatment on MS cells")
 li_mseffect = li_mseffect %>% as.data.frame() %>%
@@ -312,6 +312,12 @@ write.table(li_mseffect, file="li_mseffect.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
 ```
 
+# Changes are not consistent
+
+The top hit for the MS effect has a very large fold change, but when we
+look at the counts per gene for each sample, we can see it is due to a
+small number of samples:
+
 ```{r plotgenes}
 ncounts = counts(dds, normalized=TRUE) %>%
   as.data.frame() %>%
@@ -319,13 +325,9 @@ ncounts = counts(dds, normalized=TRUE) %>%
   dplyr::rename(gene=rowname) %>%
   tidyr::gather(sample, count, -gene) %>%
   left_join(as.data.frame(colData(dds)), by="sample")
-ggplot(subset(ncounts, gene == "ENSG00000255800"),
-       aes(sample, count, color=phenotreat)) +
-  geom_point() + scale_y_sqrt()
-
 ggplot(subset(ncounts, gene == "ENSG00000108702"),
-       aes(sample, count, color=phenotype)) +
-  geom_point() + scale_y_sqrt() + facet_wrap(~treat, scale='free_x')
-rowdata = rowData(dds)
-rowdata$gene = rownames(dds)
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+  theme(axis.text.x = element_text(angle=90))
 ```
