@@ -25,6 +25,8 @@ differences between the samples.
 load("april.RData")
 load("february.RData")
 library(DESeq2)
+library(ggplot2)
+library(pheatmap)
 aprcounts = counts(aprdds, normalized=FALSE)
 aprsummary = colData(aprdds)
 febcounts = counts(febdds, normalized=FALSE)
@@ -110,7 +112,7 @@ fit, leading to results that didn't make much sense.
 
 ```{r pca}
 ddspca = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=~treat+phenotype+phenotype:treat)
-vst = varianceStabilizingTransformation(dds)
+vst = varianceStabilizingTransformation(ddspca)
 pca_loadings = function(object, ntop=500) {
   rv <- matrixStats::rowVars(assay(object))
   select <- order(rv, decreasing = TRUE)[seq_len(min(ntop,
@@ -201,9 +203,25 @@ $\beta_{2} = \text{effect of I treatment on non-MS cells}$
 
 $\beta_{3} = \text{effect of MS on untreated cells}$
 
-$\beta_{4} = \text{specific effect of L treatment on MS cells}$
+$\beta_{4} = \text{effect of L treatment on MS cells}$
 
-$\beta_{5} = \text{specific effect of I treatment on MS cells}$
+$\beta_{5} = \text{effect of I treatment on MS cells}$
+
+In the email this is what was asked for:
+
+```
+MS: (LPS vs. LPS+Il27);
+HC: (LPS vs. LPS+IL27);
+MS LPS vs. HS LPS;
+MS LPS+IL27; HC LPS+IL27
+And here, in addition, not plated (ex-vivo) MS vs. not plated HC
+```
+
+I'm not sure what the ex-vivo MS and not plated HC means in term of the
+project.
+
+We can construct the other comparisons using the terms in the model.
+
 
 ```{r fit-model}
 design = ~month+phenotype+treat+phenotype:treat
@@ -213,96 +231,76 @@ dds = DESeq(dds)
 plotDispEsts(dds)
 ```
 
-## MS vs nonMS
-Here we looking at the difference between the `MS` and `noMS` cells,
-when the cells are untreated. We are testing the significance of `$\beta_{3}$`
-listed above.
+## MS LPS+IL27 vs HC LPS+IL27
+Here we looking at the difference between the LPS+IL27 treated noMS samples
+and the LPS+IL27 treated MS samples. We are testing the differences between
+the $\beta_{5}$ and the $\beta_{2}$ coefficients above.
+Positive $log_{2}$ fold changes are higher in the LPS+IL27 treated MS samples
+than the LPS+IL27 noMS samples.
 
-Positive $log_{2}$ fold changes are higher in the `MS untreated`
-samples than the `noMS untreated` samples.
-`
-We can see from the MA plot some evidence that there are a set of genes
-expressed at a low levels that are preferentially on or off in the MS cells.
-
-```{r ms-effects}
+```{r li-ms-vs-hc}
 library(dplyr)
-mseffect = results(dds, name="phenotype_MS_vs_noMS")
-plotMA(mseffect, ylim=c(-35,35))
+li_ms_vs_hc = results(dds, contrast=list("phenotypeMS.treatLI", "treat_LI_vs_U"))
+plotMA(li_ms_vs_hc, ylim=c(-35,35))
 title("MS effect")
-mseffect = mseffect %>% as.data.frame() %>%
+li_ms_vs_hc = li_ms_vs_hc %>% as.data.frame() %>%
   add_rownames() %>%
   dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
-write.table(mseffect, file="mseffect.csv", row.names=FALSE,
+write.table(li_ms_vs_hc, file="li_ms_vs_hc.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
 ```
-## Effect of L treatment on noMS samples
-Here we look at the difference between the `L` treated `noMS` samples
-and the untreated noMS samples. We are testing the significance of
-$\beta_{1}$ above.
 
-Positive $log_{2}$ fold changes are higher in the `noMS LPS` treated
-samples than the `noMS untreated` samples.
+## MS LPS vs. HC LPS
+Here we look at the difference between the LPS treated noMS samples
+and the LPS treated MS samples. We are testing the differences between
+the $\beta_{4}$ and $\beta_{1}$ coefficients above.
+Positive $log_{2}$ fold changes are higher in the LPS treated MS samples
+than the LPS treated HC samples.
 
-```{r l-noMS}
-lps_nomseffect = results(dds, name="treat_L_vs_U")
-plotMA(lps_nomseffect, ylim=c(-35,35))
+```{r l-ms-vs-hc}
+l_ms_vs_hc = results(dds, contrast=list("phenotypeMS.treatL", "treat_L_vs_U"))
+plotMA(l_ms_vs_hc, ylim=c(-35,35))
 title("L treatment on noMS cells")
-lps_nomseffect = lps_nomseffect %>% as.data.frame() %>%
+l_ms_vs_hc = l_ms_vs_hc %>% as.data.frame() %>%
   add_rownames() %>%
   dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
-write.table(lps_nomseffect, file="lps_nomseffect.csv", row.names=FALSE,
+write.table(l_ms_vs_hc, file="l_ms_vs_hc.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
 ```
 
-## Effect of LI treatment on noMS samples
-Here we look at the difference between the `LI treated noMS` samples
-and the `untreated noMS` samples. We are testing $\beta_{2}$ above.
+## HC: (LPS vs LPS+IL27)
+This is the effect of treating the noMS samples with LPS+IL27 compares to
+treating the noMS samples with LPS. We are testing the $\beta_{1}$ vs the
+$\beta_{2}$ coefficients above. Positive $log_{2}$ fold changes are higher
+in the noMS LPS+IL27 treated samples than the noMS LPS treated samples.
 
-Positive $log_{2}$ fold changes are higher in the `LI treated noMS`
-samples than the `noMS untreated` samples.
-
-```{r li-noMS}
-li_nomseffect = results(dds, name="treat_LI_vs_U")
-plotMA(li_nomseffect, ylim=c(-35,35))
-title("LI treatment on noMS cells")
-li_nomseffect = li_nomseffect %>% as.data.frame() %>%
+```{r li-hc}
+l_nomseffect = results(dds, contrast=list("treat_LI_vs_U", "treat_L_vs_U"))
+plotMA(l_nomseffect, ylim=c(-35,35))
+title("L treatment on NOMS cells")
+l_nomseffect = l_nomseffect %>% as.data.frame() %>%
   add_rownames() %>%
   dplyr::rename(gene=rowname) %>%
   left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
   arrange(padj)
-write.table(li_nomseffect, file="li_nomseffect.csv", row.names=FALSE,
+write.table(l_nomseffect, file="l_nomseffect.csv", row.names=FALSE,
             col.names=TRUE, quote=FALSE, sep=",")
 ```
 
-## Specific effect of L treatment on MS samples
-Here we look at the specific effect that treating with LPS has on the MS samples.
-We are testing the $\beta_{4}$ coefficient above.
+## MS: (LPS vs. LPS+IL27)
+This is the effect of treating the MS samples with LPS+IL27 compared to treating
+the MS samples with LPS We are testing the $\beta_{5}$ vs the $\beta_{4}$
+coefficients above. Positive $log_{2}$ fold changes are higher in the
+MS LPS+IL27 treated samples than the MS LPS treated samples.
 
-```{r l-ms-effect}
-l_mseffect = results(dds, name="phenotypeMS.treatL")
-plotMA(l_mseffect, ylim=c(-35,35))
-title("L treatment on MS cells")
-l_mseffect = l_mseffect %>% as.data.frame() %>%
-  add_rownames() %>%
-  dplyr::rename(gene=rowname) %>%
-  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
-  arrange(padj)
-write.table(l_mseffect, file="l_mseffect.csv", row.names=FALSE,
-            col.names=TRUE, quote=FALSE, sep=",")
-```
-
-## Specific effect of LI treatment on MS samples
-Finally we look at the specific effect that treating with LPS+IL27 has on the
-MS samples. We are testing the $\beta_{5}$ coefficient above.
-
-```{r li-ms-effect}
-li_mseffect = results(dds, name="phenotypeMS.treatLI")
+```{r li-ms}
+li_mseffect = results(dds, contrast=list("phenotypeMS.treatLI", "phenotypeMS.treatL"))
 plotMA(li_mseffect, ylim=c(-35,35))
-title("LI treatment on MS cells")
+title("LPS + LPS+IL27 treatment on MS cells")
 li_mseffect = li_mseffect %>% as.data.frame() %>%
   add_rownames() %>%
   dplyr::rename(gene=rowname) %>%
@@ -314,9 +312,9 @@ write.table(li_mseffect, file="li_mseffect.csv", row.names=FALSE,
 
 # Changes are not consistent
 
-The top hit for the MS effect has a very large fold change, but when we
-look at the counts per gene for each sample, we can see it is due to a
-small number of samples:
+The top hit for the LI vs L in MS cells has a very large fold change, but when
+we look at the counts per gene for each sample, we can see it is due to a single
+outlier sample.
 
 ```{r plotgenes}
 ncounts = counts(dds, normalized=TRUE) %>%
@@ -325,9 +323,34 @@ ncounts = counts(dds, normalized=TRUE) %>%
   dplyr::rename(gene=rowname) %>%
   tidyr::gather(sample, count, -gene) %>%
   left_join(as.data.frame(colData(dds)), by="sample")
-ggplot(subset(ncounts, gene == "ENSG00000108702"),
+ggplot(subset(ncounts, gene == "ENSG00000072041"),
        aes(sample, count, color=phenotype, shape=month)) +
   geom_point() +
   facet_wrap(~treat, scale='free_x') +
   theme(axis.text.x = element_text(angle=90))
+```
+
+Filtering on baseMean > 50 doesn't discard these fold changes, we still
+see single outlier samples driving the differences.
+
+```{r plotgenes-stable}
+ggplot(subset(ncounts, gene == "ENSG00000106066"),
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+  theme(axis.text.x = element_text(angle=90))
+```
+
+It isn't just this one comparison. Here are the LPS+IL27 treated MS cells
+vs the LPS+IL27 treated HC cells. We can see several calls where one gene
+drives the difference.
+
+```{r filtered}
+pheatmap(log(counts[head(li_ms_vs_hc, 25)$gene,] + 1))
+ggplot(subset(ncounts, gene == "ENSG00000108702"),
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+theme(axis.text.x = element_text(angle=90)) +
+ggtitle("ENSG00000108702")
 ```

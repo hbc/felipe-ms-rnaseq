@@ -474,6 +474,8 @@ geoMeans = apply(counts, 1, function(row) if (all(row == 0)) 0 else
                  exp(mean(log(row[row != 0]))))
 dds = estimateSizeFactors(dds, geoMeans=geoMeans)
 dds = DESeq(dds)
+aprildds = dds
+save(aprildds, file="april_dds.RData")
 ```
 
 ```{r biomart-setup}
