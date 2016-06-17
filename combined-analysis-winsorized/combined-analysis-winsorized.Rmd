@@ -1,0 +1,364 @@
+---
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+    highlight: zenburn
+    theme: flatly
+header-includes:
+   - \usepackage{amsmath}
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(tidy=TRUE, highlight=TRUE, dev="png",
+               cache=TRUE, highlight=TRUE, autodep=TRUE, warning=FALSE, error=FALSE,
+               message=FALSE, prompt=TRUE, comment='', fig.cap='')
+```
+
+# Combined analysis
+We are going to combine the samples that were run in February and the samples
+that were run in April to have more samples to increase our power to find
+differences between the samples.
+
+```{r load-deseq-objects}
+load("april.RData")
+load("february.RData")
+library(DESeq2)
+library(ggplot2)
+library(pheatmap)
+aprcounts = counts(aprdds, normalized=FALSE)
+aprsummary = colData(aprdds)
+febcounts = counts(febdds, normalized=FALSE)
+febsummary = colData(febdds)
+```
+
+The sample data is coded a little bit different for both runs, so we will have
+to normalize them so they are the same. We will first drop everything except
+the metadata from the summary dataframes.
+
+```{r small-summary}
+febsum = febsummary[, c("samplename", "fraction", "treatment", "group",
+                        "phenotype")]
+aprsum = aprsummary[, c("Name", "condition", "treatment", "patient")]
+```
+
+Now we need to recode some of the columns. We'll add a 'phenotype' column
+to the April data.
+
+```{r add-phenotype-column}
+aprsum$phenotype = ifelse(aprsum$condition == "HC", "noMS", "MS")
+```
+
+We'll recode the treatment factors to be `L` for `LPS` and `LI` for `LPS+IL27`
+and `U` for untreated to avoid using a plus. We'll also rename the `patient`
+column to `group` for the April samples and add a `a` or `f` prefix to make the
+groups unique across months. Finally we add a column for which month the
+sequencing was done.
+
+```{r recode-treatment-columns}
+aprsum$treat = ifelse(aprsum$treatment == "LPS", "L", "LI")
+febsum$treat = ifelse(febsum$treatment == "LPS", "L",
+               ifelse(febsum$treatment == "natural", "U", "LI"))
+aprsum$group = aprsum$patient
+febmeta = febsum[, c("group", "treat", "phenotype")]
+aprmeta = aprsum[, c("group", "treat", "phenotype")]
+febmeta$month = "feb"
+aprmeta$month = "apr"
+febmeta$group = paste0("f", febmeta$group)
+aprmeta$group = paste0("a", aprmeta$group)
+```
+
+Now we can combine the metadata and the counts, replace missing values with 0
+and reorder the metadata and the counts so they are in the same order. We'll
+also drop the untreated samples since we don't have those in the April run
+and that causes some issues in convergence.
+
+```{r final-combine}
+library(dplyr)
+melted = rbind(reshape2::melt(aprcounts), reshape2::melt(febcounts))
+colnames(melted) = c("gene", "sample", "count")
+combined = melted %>% tidyr::spread(sample, count) %>% as.data.frame()
+rownames(combined) = combined$gene
+combined$gene = NULL
+combined[is.na(combined)] = 0
+counts = combined
+metadata = rbind(febmeta, aprmeta)
+metadata$group = as.factor(metadata$group)
+metadata$treat = relevel(as.factor(metadata$treat), ref="U")
+metadata$phenotype = relevel(as.factor(metadata$phenotype), ref="noMS")
+metadata$phenotreat = relevel(as.factor(
+  paste(metadata$phenotype, metadata$treat, sep="_")), ref="noMS_U")
+metadata$sample = rownames(metadata)
+counts = counts[, rownames(metadata)]
+```
+
+And pull in the gene symbols from biomaRt.
+
+```{r biomart-symbols}
+mart = biomaRt::useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
+symbols <- biomaRt::getBM(attributes = c("ensembl_gene_id",
+                                         "external_gene_name", "hgnc_symbol"),
+                          mart=mart)
+```
+
+And we're almost good to go.
+
+# Data cleaning
+Before we do differential expression, we need to throw away samples that are
+very different from all other samples. I did a version of the analysis leaving
+in all of the samples and a few outlier samples were dominating the regression
+fit, leading to results that didn't make much sense.
+
+```{r pca}
+ddspca = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=~treat+phenotype+phenotype:treat)
+vst = varianceStabilizingTransformation(ddspca)
+pca_loadings = function(object, ntop=500) {
+  rv <- matrixStats::rowVars(assay(object))
+  select <- order(rv, decreasing = TRUE)[seq_len(min(ntop,
+      length(rv)))]
+  pca <- prcomp(t(assay(object)[select, ]))
+  percentVar <- pca$sdev^2/sum(pca$sdev^2)
+  names(percentVar) = colnames(pca$x)
+  pca$percentVar = percentVar
+  return(pca)}
+pc = pca_loadings(vst)
+comps = data.frame(pc$x)
+comps$Name = rownames(comps)
+library(dplyr)
+comps = comps %>% left_join(as.data.frame(metadata), by=c("Name"="sample"))
+colorby = "phenotreat"
+pca_plot = function(comps, nc1, nc2, colorby) {
+   c1str = paste0("PC", nc1)
+   c2str = paste0("PC", nc2)
+  ggplot(comps, aes_string(c1str, c2str, color=colorby)) +
+    geom_point() + theme_bw() +
+    xlab(paste0(c1str, ": ", round(pc$percentVar[nc1] * 100), "% variance")) +
+    ylab(paste0(c2str, ": ", round(pc$percentVar[nc2] * 100), "% variance"))
+}
+library(viridis)
+ggplot(comps, aes(PC1, PC2, color=treat, shape=phenotype, size=month)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+ggplot(comps, aes(PC3, PC4, color=treat, shape=phenotype)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+ggplot(comps, aes(PC5, PC6, color=treat, shape=phenotype)) + geom_point() +
+  scale_color_viridis(discrete=TRUE)
+pca_plot(comps, 1, 2, "phenotreat") + scale_color_viridis(discrete=TRUE)
+pca_plot(comps, 3, 4, "phenotreat") + scale_color_viridis(discrete=TRUE)
+```
+
+# Differential expresssion
+
+I originally fit a model looking only within patients that are in the same
+`group`, since they are matched. This gave a lot of results that looked like
+spurious results; I think the reason for this is there are very few groups which
+have the full complement of patients, so we ended up fitting to just one or two
+samples.
+
+I then dropped the group term, but this introduced spurious results from the
+different February and April sequencing. I added a term for month, and dropped
+the group, and that seems to give more sensible results.
+
+Then we fit a term for `phenotype`, `treatment` and an interaction term between
+`phenotype` and `treatment` so we can look at the specific effects of each
+treatment. We fit this model:
+
+$$Y \sim month + treat + pheno + pheno:treat$$
+
+Which expands to:
+
+$$Y \sim \beta_0 + \beta_{1}x_{1} + \beta_{2}x_{2} + \beta_{3}x_{3} +
+\beta_{4}x_{1}x_{3} + \beta_{5}x_{2}x_{3}$$
+
+where
+
+$x_{1} = \left\{
+\begin{array}{ll}
+      1 & \text{treat is L} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+$x_{2} = \left\{
+\begin{array}{ll}
+      1 & \text{treat is I} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+$x_{3} = \left\{
+\begin{array}{ll}
+      1 & \text{pheno is noMS} \\
+      0 & \text{otherwise} \\
+\end{array}
+\right.$
+
+This gives the following meaning to the coefficients:
+
+$\beta_{0} = \text{baseline expression in untreated, non MS cells}$
+
+$\beta_{1} = \text{effect of L treatment on non-MS cells}$
+
+$\beta_{2} = \text{effect of I treatment on non-MS cells}$
+
+$\beta_{3} = \text{effect of MS on untreated cells}$
+
+$\beta_{4} = \text{effect of L treatment on MS cells}$
+
+$\beta_{5} = \text{effect of I treatment on MS cells}$
+
+In the email this is what was asked for:
+
+```
+MS: (LPS vs. LPS+Il27);
+HC: (LPS vs. LPS+IL27);
+MS LPS vs. HS LPS;
+MS LPS+IL27; HC LPS+IL27
+And here, in addition, not plated (ex-vivo) MS vs. not plated HC
+```
+
+I'm not sure what the ex-vivo MS and not plated HC means in term of the
+project.
+
+We can construct the other comparisons using the terms in the model.
+
+Previous versions of this analysis used the raw count data matrix, but what was
+happening was the regression model was getting pulled by single samples that had
+huge outliers in some genes. In this version of the analysis, we Winsorize the
+count matrix before running the analysis. Winsorizing is just a fancy way of
+saying we replaced the highest value for each gene with the second highest value
+for outlier samples, to try to smooth out outliers.
+
+```{r fit-model}
+design = ~month+phenotype+treat+phenotype:treat
+library(scde)
+counts = winsorize.matrix(as.matrix(counts), 1)
+dds = DESeqDataSetFromMatrix(countData=counts, colData=metadata, design=design)
+dds = estimateSizeFactors(dds)
+dds = DESeq(dds)
+plotDispEsts(dds)
+```
+
+## MS LPS+IL27 vs HC LPS+IL27
+Here we looking at the difference between the LPS+IL27 treated noMS samples
+and the LPS+IL27 treated MS samples. We are testing the differences between
+the $\beta_{5}$ and the $\beta_{2}$ coefficients above.
+Positive $log_{2}$ fold changes are higher in the LPS+IL27 treated MS samples
+than the LPS+IL27 noMS samples.
+
+```{r li-ms-vs-hc}
+library(dplyr)
+li_ms_vs_hc = results(dds, contrast=list("phenotypeMS.treatLI", "treat_LI_vs_U"))
+plotMA(li_ms_vs_hc, ylim=c(-35,35))
+title("MS effect")
+li_ms_vs_hc = li_ms_vs_hc %>% as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(li_ms_vs_hc, file="li_ms_vs_hc.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## MS LPS vs. HC LPS
+Here we look at the difference between the LPS treated noMS samples
+and the LPS treated MS samples. We are testing the differences between
+the $\beta_{4}$ and $\beta_{1}$ coefficients above.
+Positive $log_{2}$ fold changes are higher in the LPS treated MS samples
+than the LPS treated HC samples.
+
+```{r l-ms-vs-hc}
+l_ms_vs_hc = results(dds, contrast=list("phenotypeMS.treatL", "treat_L_vs_U"))
+plotMA(l_ms_vs_hc, ylim=c(-35,35))
+title("L treatment on noMS cells")
+l_ms_vs_hc = l_ms_vs_hc %>% as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(l_ms_vs_hc, file="l_ms_vs_hc.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## HC: (LPS vs LPS+IL27)
+This is the effect of treating the noMS samples with LPS+IL27 compares to
+treating the noMS samples with LPS. We are testing the $\beta_{1}$ vs the
+$\beta_{2}$ coefficients above. Positive $log_{2}$ fold changes are higher
+in the noMS LPS+IL27 treated samples than the noMS LPS treated samples.
+
+```{r li-hc}
+l_nomseffect = results(dds, contrast=list("treat_LI_vs_U", "treat_L_vs_U"))
+plotMA(l_nomseffect, ylim=c(-35,35))
+title("L treatment on NOMS cells")
+l_nomseffect = l_nomseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(l_nomseffect, file="l_nomseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+## MS: (LPS vs. LPS+IL27)
+This is the effect of treating the MS samples with LPS+IL27 compared to treating
+the MS samples with LPS We are testing the $\beta_{5}$ vs the $\beta_{4}$
+coefficients above. Positive $log_{2}$ fold changes are higher in the
+MS LPS+IL27 treated samples than the MS LPS treated samples.
+
+```{r li-ms}
+li_mseffect = results(dds, contrast=list("phenotypeMS.treatLI", "phenotypeMS.treatL"))
+plotMA(li_mseffect, ylim=c(-35,35))
+title("LPS + LPS+IL27 treatment on MS cells")
+li_mseffect = li_mseffect %>% as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  left_join(symbols, by=c("gene"="ensembl_gene_id"))  %>%
+  arrange(padj)
+write.table(li_mseffect, file="li_mseffect.csv", row.names=FALSE,
+            col.names=TRUE, quote=FALSE, sep=",")
+```
+
+# Changes are not consistent
+
+The top hit for the LI vs L in MS cells has a very large fold change, but when
+we look at the counts per gene for each sample, we can see it is due to a single
+outlier sample.
+
+```{r plotgenes}
+ncounts = counts(dds, normalized=TRUE) %>%
+  as.data.frame() %>%
+  add_rownames() %>%
+  dplyr::rename(gene=rowname) %>%
+  tidyr::gather(sample, count, -gene) %>%
+  left_join(as.data.frame(colData(dds)), by="sample")
+ggplot(subset(ncounts, gene == "ENSG00000182557"),
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+  theme(axis.text.x = element_text(angle=90))
+```
+
+Filtering on baseMean > 50 doesn't discard these fold changes, we still
+see single outlier samples driving the differences.
+
+```{r plotgenes-stable}
+ggplot(subset(ncounts, gene == "ENSG00000106066"),
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+  theme(axis.text.x = element_text(angle=90))
+```
+
+It isn't just this one comparison. Here are the LPS+IL27 treated MS cells
+vs the LPS+IL27 treated HC cells. We can see several calls where one gene
+drives the difference.
+
+```{r filtered}
+pheatmap(log(counts[head(li_ms_vs_hc, 25)$gene,] + 1))
+ggplot(subset(ncounts, gene == "ENSG00000108702"),
+       aes(sample, count, color=phenotype, shape=month)) +
+  geom_point() +
+  facet_wrap(~treat, scale='free_x') +
+theme(axis.text.x = element_text(angle=90)) +
+ggtitle("ENSG00000108702")
+```
